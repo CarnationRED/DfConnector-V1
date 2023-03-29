@@ -1,0 +1,15 @@
+.\objects\gd32c10x_rcu.o: ..\Firmware\GD32C10x_standard_peripheral\Source\gd32c10x_rcu.c
+.\objects\gd32c10x_rcu.o: ..\Firmware\GD32C10x_standard_peripheral\Include\gd32c10x_rcu.h
+.\objects\gd32c10x_rcu.o: ..\Firmware\CMSIS\GD\GD32C10x\Include\gd32c10x.h
+.\objects\gd32c10x_rcu.o: ..\Firmware\CMSIS\core_cm4.h
+.\objects\gd32c10x_rcu.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\gd32c10x_rcu.o: ..\Firmware\CMSIS\core_cmInstr.h
+.\objects\gd32c10x_rcu.o: ..\Firmware\CMSIS\core_cmFunc.h
+.\objects\gd32c10x_rcu.o: ..\Firmware\CMSIS\core_cm4_simd.h
+.\objects\gd32c10x_rcu.o: ..\Firmware\CMSIS\GD\GD32C10x\Include\system_gd32c10x.h
+.\objects\gd32c10x_rcu.o: C:\Users\Avent\AppData\Local\Arm\Packs\GigaDevice\GD32C10x_DFP\1.0.1\Device\Include\gd32c10x_libopt.h
+.\objects\gd32c10x_rcu.o: .\RTE\_Bootloader1\RTE_Components.h
+.\objects\gd32c10x_rcu.o: ..\Firmware\GD32C10x_standard_peripheral\Include\gd32c10x_misc.h
+.\objects\gd32c10x_rcu.o: ..\Firmware\CMSIS\GD\GD32C10x\Include\gd32c10x.h
+.\objects\gd32c10x_rcu.o: ..\Firmware\GD32C10x_standard_peripheral\Include\gd32c10x_pmu.h
+.\objects\gd32c10x_rcu.o: ..\Firmware\GD32C10x_standard_peripheral\Include\gd32c10x_rcu.h
