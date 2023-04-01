@@ -87,7 +87,7 @@ void wifi_enableIT(void)
 void wifi_reset(void)
 {
 		gpio_bit_write(WIFI_NCS_RST_PORT, WIFI_RST_PIN, RESET);
-		delay_ms(500);
+		delay_ms(800);
 }
 static char IntToHex(unsigned x) {
   x &= 15;
@@ -113,7 +113,7 @@ void wifi_Init(void)
 			{
 					// 此时总线上，返回的字节必须是0x41，说明spi初始化和接线都对了
 					wifi_status = WIFI_STATUS_ERR_SPI_INIT;
-					return;
+					continue;
 			}
 			
 			if (M8266HostIf_SPI_Select(WIFI_SPI_PORT, 15000000, &status) == 0) //设置模块的SPI连接信息

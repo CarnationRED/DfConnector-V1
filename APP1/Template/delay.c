@@ -157,10 +157,12 @@ void clear_heartbeat_pending(void)
 {
 		heartbeat_send_i = 0;
 }
+//heartbeat:3000ms
 u8 heartbeat_timeout(void)
 {
 		return heartbeat_recv_i >= heartbeat_recv_c;
 }
+//heartbeat:3000ms
 void clear_heartbeat_timeout(void)
 {
 		heartbeat_recv_i = 0;
@@ -190,6 +192,7 @@ void tim3_it(void)
 						gpio_bit_write(GPIOC, GPIO_PIN_14, led2_state = RESET);
 				else
 						gpio_bit_write(GPIOC, GPIO_PIN_14, led2_state = SET - led2_state);
+				can_traffic_indicator=1;
 		}
 		if(heartbeat_send_i < heartbeat_send_c)
 		{

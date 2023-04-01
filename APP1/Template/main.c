@@ -442,7 +442,7 @@ int main(void)
 				led_flash_config();
 				
 				buzz_config();
-				beep_setvolume(5);
+				beep_setvolume(85);
 				if(rom1)
 					beep(beep_startup1, 1, 400);
 				else 
@@ -458,24 +458,24 @@ int main(void)
 				
 				vci_can_init();
 	
-				can_struct_para_init(CAN_TX_MESSAGE_STRUCT, &m);
-				m.tx_sfid = 0x001;
-				m.tx_efid = 0x002;
-				m.tx_ft = CAN_FT_DATA;
-				m.tx_ff = CAN_FF_STANDARD;
-				m.tx_dlen = 8;
-				m.fd_flag = 0;
-				m.fd_brs = 0;
-				m.fd_esi = 0;
-			  m.tx_efid = 0x111;
-				m.tx_data[0] = 0xaa;
-				m.tx_data[1] = 0xbb;
-				m.tx_data[2] = 0xcc;
-				m.tx_data[3] = 0xdd;
-				m.tx_data[4] = 0xee;
-				m.tx_data[5] = 0xff;
-				m.tx_data[6] = 0x00;
-				m.tx_data[7] = 0x11;
+//				can_struct_para_init(CAN_TX_MESSAGE_STRUCT, &m);
+//				m.tx_sfid = 0x001;
+//				m.tx_efid = 0x002;
+//				m.tx_ft = CAN_FT_DATA;
+//				m.tx_ff = CAN_FF_STANDARD;
+//				m.tx_dlen = 8;
+//				m.fd_flag = 0;
+//				m.fd_brs = 0;
+//				m.fd_esi = 0;
+//			  m.tx_efid = 0x111;
+//				m.tx_data[0] = 0xaa;
+//				m.tx_data[1] = 0xbb;
+//				m.tx_data[2] = 0xcc;
+//				m.tx_data[3] = 0xdd;
+//				m.tx_data[4] = 0xee;
+//				m.tx_data[5] = 0xff;
+//				m.tx_data[6] = 0x00;
+//				m.tx_data[7] = 0x11;
 //				while(1){
 //						gpio_bit_write(GPIOC, GPIO_PIN_14, led2_state = SET - led2_state);
 //							delay_ms(500);
@@ -507,7 +507,7 @@ int main(void)
 				
 				/* start wifi, time consuming */
 				wifi_Init();
-				delay_ms(20);
+				delay_ms(220);
 				/* start server port 1112 for can message uploading and can command downloading */
 				wifi_SetupTCPServer(WIFI_CAN_MSG_PORT,WIFI_CAN_MSG_CHNL);
 				/* start server port 1113 for can device control, reinit, filter setting, and so on */
@@ -523,6 +523,8 @@ int main(void)
 							beep(beep_startup1, sizeof(beep_startup1), 600);
 						else 
 							beep(beep_startup2, sizeof(beep_startup2), 600);
+				}else{
+					volatile u8 a=1;
 				}
 				set_vci_status(VCI_STATUS_RUN);
 				
@@ -535,6 +537,7 @@ int main(void)
 						/*wait until connection established*/
 						while(wifi_GetClients(WIFI_CAN_CTL_CHNL) <= 0 && wifi_GetClients(WIFI_VCI_CTL_CHNL) <= 0 && wifi_GetClients(WIFI_CAN_MSG_CHNL) <= 0 && get_vci_status() == VCI_STATUS_RUN) delay_ms(100);
 						
+						clear_heartbeat_timeout();
 						up= current_time01ms()/10;
 						buzzer_wait_until_idle();
 						/*beep: device connected*/
@@ -555,7 +558,7 @@ int main(void)
 											if(current_time01ms() - last_wifi_time > 400)
 											{
 													clear_heartbeat_timeout();
-													updown_err_cnt += (current_time01ms()/10 - up) < 400;
+													updown_err_cnt += (current_time01ms()/10 - up) < 800;
 													//if wifi connection is abnormal, ie. the FIN packet is missing
 													if(updown_err_cnt == 2)
 															set_vci_status(VCI_STATUS_RESET);
@@ -584,8 +587,10 @@ int main(void)
 						while(get_vci_status() == VCI_STATUS_DFU);
 						buzzer_wait_until_idle();
 						beep(beep_disconnected, 3, 600);
+						if(messaging_status != MSG_STATUS_NORMAL)break;
 				}
-				wifi_reset();
+				__set_FAULTMASK(1);
+				NVIC_SystemReset();
 		}
 }
 

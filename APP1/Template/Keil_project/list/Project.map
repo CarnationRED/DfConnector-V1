@@ -56,7 +56,6 @@ Section Cross References
     main.o(i.main) refers to buzzer.o(i.beep_setvolume) for beep_setvolume
     main.o(i.main) refers to buzzer.o(i.beep) for beep
     main.o(i.main) refers to main.o(i.vci_can_init) for vci_can_init
-    main.o(i.main) refers to gd32c10x_can.o(i.can_struct_para_init) for can_struct_para_init
     main.o(i.main) refers to wifi.o(i.wifi_Init) for wifi_Init
     main.o(i.main) refers to delay.o(i.delay_ms) for delay_ms
     main.o(i.main) refers to wifi.o(i.wifi_SetupTCPServer) for wifi_SetupTCPServer
@@ -64,17 +63,16 @@ Section Cross References
     main.o(i.main) refers to main.o(i.set_vci_status) for set_vci_status
     main.o(i.main) refers to wifi.o(i.wifi_GetClients) for wifi_GetClients
     main.o(i.main) refers to main.o(i.get_vci_status) for get_vci_status
+    main.o(i.main) refers to delay.o(i.clear_heartbeat_timeout) for clear_heartbeat_timeout
     main.o(i.main) refers to delay.o(i.current_time01ms) for current_time01ms
     main.o(i.main) refers to gd32c10x_gpio.o(i.gpio_input_bit_get) for gpio_input_bit_get
     main.o(i.main) refers to gd32c10x_it.o(i.EXTI4_IRQHandler) for EXTI4_IRQHandler
     main.o(i.main) refers to delay.o(i.heartbeat_timeout) for heartbeat_timeout
-    main.o(i.main) refers to delay.o(i.clear_heartbeat_timeout) for clear_heartbeat_timeout
     main.o(i.main) refers to delay.o(i.heartbeat_pending) for heartbeat_pending
     main.o(i.main) refers to delay.o(i.clear_heartbeat_pending) for clear_heartbeat_pending
     main.o(i.main) refers to wifi.o(i.wifi_SendData) for wifi_SendData
     main.o(i.main) refers to messages.o(i.can_msg_send2wifi) for can_msg_send2wifi
     main.o(i.main) refers to messages.o(i.can_cmd_send2can) for can_cmd_send2can
-    main.o(i.main) refers to wifi.o(i.wifi_reset) for wifi_reset
     main.o(i.main) refers to main.o(.data) for beep_startup1
     main.o(i.main) refers to wifi.o(.data) for wifi_status
     main.o(i.main) refers to messages.o(.data) for messaging_status
@@ -191,17 +189,21 @@ Section Cross References
     m8266wifidrv.o(i.M8266HostIf_Set_SPI_nCS_Pin) refers to gd32c10x_gpio.o(i.gpio_bit_write) for gpio_bit_write
     m8266wifidrv.o(i.M8266HostIf_Set_nRESET_Pin) refers to gd32c10x_gpio.o(i.gpio_bit_write) for gpio_bit_write
     m8266wifidrv.o(i.M8266HostIf_delay_us) refers to delay.o(i.delay_us) for delay_us
-    messages.o(i.can_cmd_recv) refers to messages.o(i.can_cmd_recv_iterate) for can_cmd_recv_iterate
+    messages.o(i.can_cmd_recv) refers to messages.o(i.can_cmd_recv_send_iterate) for can_cmd_recv_send_iterate
     messages.o(i.can_cmd_recv) refers to wifi.o(i.wifi_SendData) for wifi_SendData
     messages.o(i.can_cmd_recv) refers to messages.o(.data) for can_cmd_send_ack
     messages.o(i.can_cmd_recv_iterate) refers to M8266WIFIDrv_STM32F2xx.o(.text.M8266WIFI_SPI_RecvData) for M8266WIFI_SPI_RecvData
     messages.o(i.can_cmd_recv_iterate) refers to messages.o(.data) for can_cmd_recv_count
     messages.o(i.can_cmd_recv_iterate) refers to messages.o(.bss) for can_send_queue
+    messages.o(i.can_cmd_recv_send_iterate) refers to M8266WIFIDrv_STM32F2xx.o(.text.M8266WIFI_SPI_RecvData) for M8266WIFI_SPI_RecvData
+    messages.o(i.can_cmd_recv_send_iterate) refers to messages.o(i.can_cmd_sendonce) for can_cmd_sendonce
     messages.o(i.can_cmd_send2can) refers to memcpya.o(.text) for __aeabi_memcpy4
-    messages.o(i.can_cmd_send2can) refers to main.o(i.set_can_channel) for set_can_channel
-    messages.o(i.can_cmd_send2can) refers to gd32c10x_can.o(i.can_message_transmit) for can_message_transmit
+    messages.o(i.can_cmd_send2can) refers to messages.o(i.can_cmd_sendonce) for can_cmd_sendonce
     messages.o(i.can_cmd_send2can) refers to messages.o(.data) for can_cmd_recv_start
     messages.o(i.can_cmd_send2can) refers to messages.o(.bss) for can_send_queue
+    messages.o(i.can_cmd_sendonce) refers to main.o(i.set_can_channel) for set_can_channel
+    messages.o(i.can_cmd_sendonce) refers to gd32c10x_can.o(i.can_message_transmit) for can_message_transmit
+    messages.o(i.can_cmd_sendonce) refers to messages.o(.data) for can_traffic_indicator
     messages.o(i.can_msg_buffer_clear) refers to messages.o(.data) for can_msg_recv_start
     messages.o(i.can_msg_recv) refers to delay.o(i.current_time01ms) for current_time01ms
     messages.o(i.can_msg_recv) refers to gd32c10x_can.o(i.can_message_receive) for can_message_receive
@@ -698,6 +700,7 @@ Removing Unused input sections from the image.
     Removing wifi.o(.rev16_text), (4 bytes).
     Removing wifi.o(.revsh_text), (4 bytes).
     Removing wifi.o(i.wifi_GetSTACount), (40 bytes).
+    Removing wifi.o(i.wifi_reset), (28 bytes).
     Removing wifi.o(.bss), (2048 bytes).
     Removing delay.o(.rev16_text), (4 bytes).
     Removing delay.o(.revsh_text), (4 bytes).
@@ -706,6 +709,7 @@ Removing Unused input sections from the image.
     Removing m8266wifidrv.o(i.M8266HostIf_Set_nRESET_Pin), (36 bytes).
     Removing messages.o(.rev16_text), (4 bytes).
     Removing messages.o(.revsh_text), (4 bytes).
+    Removing messages.o(i.can_cmd_recv_iterate), (260 bytes).
     Removing vci.o(.rev16_text), (4 bytes).
     Removing vci.o(.revsh_text), (4 bytes).
     Removing buzzer.o(.rev16_text), (4 bytes).
@@ -1348,7 +1352,7 @@ Removing Unused input sections from the image.
     Removing M8266WIFIDrv_STM32F2xx.o(.text.M8266WIFI_SPI_Module_OTA), (304 bytes).
     Removing M8266WIFIDrv_STM32F2xx.o(.text.M8266WIFI_SPI_Get_Driver_Info), (40 bytes).
 
-656 unused section(s) (total 35586 bytes) removed from the image.
+658 unused section(s) (total 35874 bytes) removed from the image.
 
 ==============================================================================
 
@@ -1360,22 +1364,22 @@ Image Symbol Table
 
     ../clib/../cmprslib/zerorunl2.c          0x00000000   Number         0  __dczerorl2.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry12a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7b.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry5.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry2.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry12b.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11b.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11a.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry10b.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry10a.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry2.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry5.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7a.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7b.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8a.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8b.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry9a.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry12b.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry9b.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11b.o ABSOLUTE
-    ../clib/microlib/string/memcpy.c         0x00000000   Number         0  memcpya.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry9a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8b.o ABSOLUTE
     ../clib/microlib/string/memcpy.c         0x00000000   Number         0  memcpyb.o ABSOLUTE
+    ../clib/microlib/string/memcpy.c         0x00000000   Number         0  memcpya.o ABSOLUTE
     ..\..\Firmware\CMSIS\GD\GD32C10x\Source\ARM\startup_gd32c10x.s 0x00000000   Number         0  startup_gd32c10x.o ABSOLUTE
     ..\..\Firmware\CMSIS\GD\GD32C10x\Source\system_gd32c10x.c 0x00000000   Number         0  system_gd32c10x.o ABSOLUTE
     ..\..\Firmware\GD32C10x_standard_peripheral\Source\gd32c10x_adc.c 0x00000000   Number         0  gd32c10x_adc.o ABSOLUTE
@@ -1535,119 +1539,119 @@ Image Symbol Table
     i.can1_filter_start_bank                 0x08003434   Section        0  gd32c10x_can.o(i.can1_filter_start_bank)
     i.can_clear_filter                       0x0800346c   Section        0  main.o(i.can_clear_filter)
     i.can_cmd_recv                           0x08003500   Section        0  messages.o(i.can_cmd_recv)
-    i.can_cmd_recv_iterate                   0x0800353c   Section        0  messages.o(i.can_cmd_recv_iterate)
-    i.can_cmd_send2can                       0x0800360c   Section        0  messages.o(i.can_cmd_send2can)
-    i.can_config                             0x08003690   Section        0  main.o(i.can_config)
-    i.can_deinit                             0x080037dc   Section        0  gd32c10x_can.o(i.can_deinit)
-    i.can_fd_frequency_set                   0x08003810   Section        0  gd32c10x_can.o(i.can_fd_frequency_set)
-    i.can_fd_init                            0x08003842   Section        0  gd32c10x_can.o(i.can_fd_init)
-    i.can_filter_init                        0x08003938   Section        0  gd32c10x_can.o(i.can_filter_init)
-    i.can_frequency_set                      0x08003a48   Section        0  gd32c10x_can.o(i.can_frequency_set)
-    i.can_gpio_config                        0x08003abc   Section        0  main.o(i.can_gpio_config)
-    i.can_init                               0x08003b4c   Section        0  gd32c10x_can.o(i.can_init)
-    i.can_interrupt_enable                   0x08003cf0   Section        0  gd32c10x_can.o(i.can_interrupt_enable)
-    i.can_message_receive                    0x08003cf8   Section        0  gd32c10x_can.o(i.can_message_receive)
-    i.can_message_transmit                   0x08003ebc   Section        0  gd32c10x_can.o(i.can_message_transmit)
-    i.can_msg_buffer_clear                   0x08004130   Section        0  messages.o(i.can_msg_buffer_clear)
-    i.can_msg_recv                           0x08004154   Section        0  messages.o(i.can_msg_recv)
-    i.can_msg_send2wifi                      0x08004208   Section        0  messages.o(i.can_msg_send2wifi)
-    i.can_set_id_filter_extended             0x08004294   Section        0  main.o(i.can_set_id_filter_extended)
-    i.can_set_id_filter_standard             0x08004314   Section        0  main.o(i.can_set_id_filter_standard)
-    i.can_struct_para_init                   0x080043a4   Section        0  gd32c10x_can.o(i.can_struct_para_init)
-    i.can_transmission_stop                  0x08004486   Section        0  gd32c10x_can.o(i.can_transmission_stop)
-    i.can_working_mode_set                   0x080044d6   Section        0  gd32c10x_can.o(i.can_working_mode_set)
-    i.clear_heartbeat_pending                0x08004580   Section        0  delay.o(i.clear_heartbeat_pending)
-    i.clear_heartbeat_timeout                0x0800458c   Section        0  delay.o(i.clear_heartbeat_timeout)
-    i.clear_mailbox                          0x08004598   Section        0  main.o(i.clear_mailbox)
-    i.current_time01ms                       0x080045b8   Section        0  delay.o(i.current_time01ms)
-    i.delay_ms                               0x080045d0   Section        0  delay.o(i.delay_ms)
-    i.delay_us                               0x080046a0   Section        0  delay.o(i.delay_us)
-    i.dev_can_baudrate_set                   0x080046fc   Section        0  gd32c10x_can.o(i.dev_can_baudrate_set)
-    dev_can_baudrate_set                     0x080046fd   Thumb Code   106  gd32c10x_can.o(i.dev_can_baudrate_set)
-    i.dev_can_fd_baudrate_set                0x08004790   Section        0  gd32c10x_can.o(i.dev_can_fd_baudrate_set)
-    dev_can_fd_baudrate_set                  0x08004791   Thumb Code   172  gd32c10x_can.o(i.dev_can_fd_baudrate_set)
-    i.device_firmware_upgrade                0x0800487c   Section        0  vci.o(i.device_firmware_upgrade)
-    i.err_led                                0x08004a90   Section        0  main.o(i.err_led)
-    i.exti_init                              0x08004ab8   Section        0  gd32c10x_exti.o(i.exti_init)
-    i.exti_interrupt_flag_clear              0x08004b70   Section        0  gd32c10x_exti.o(i.exti_interrupt_flag_clear)
-    i.fmc_flag_clear                         0x08004b7c   Section        0  gd32c10x_fmc.o(i.fmc_flag_clear)
-    i.fmc_lock                               0x08004b88   Section        0  gd32c10x_fmc.o(i.fmc_lock)
-    i.fmc_page_erase                         0x08004b9c   Section        0  gd32c10x_fmc.o(i.fmc_page_erase)
-    i.fmc_ready_wait                         0x08004be4   Section        0  gd32c10x_fmc.o(i.fmc_ready_wait)
-    fmc_ready_wait                           0x08004be5   Thumb Code    34  gd32c10x_fmc.o(i.fmc_ready_wait)
-    i.fmc_state_get                          0x08004c08   Section        0  gd32c10x_fmc.o(i.fmc_state_get)
-    fmc_state_get                            0x08004c09   Thumb Code    58  gd32c10x_fmc.o(i.fmc_state_get)
-    i.fmc_unlock                             0x08004c48   Section        0  gd32c10x_fmc.o(i.fmc_unlock)
-    i.fmc_word_program                       0x08004c6c   Section        0  gd32c10x_fmc.o(i.fmc_word_program)
-    i.get_vci_status                         0x08004cac   Section        0  main.o(i.get_vci_status)
-    i.gpio_bit_reset                         0x08004cb8   Section        0  gd32c10x_gpio.o(i.gpio_bit_reset)
-    i.gpio_bit_set                           0x08004cbc   Section        0  gd32c10x_gpio.o(i.gpio_bit_set)
-    i.gpio_bit_write                         0x08004cc0   Section        0  gd32c10x_gpio.o(i.gpio_bit_write)
-    i.gpio_exti_source_select                0x08004ccc   Section        0  gd32c10x_gpio.o(i.gpio_exti_source_select)
-    i.gpio_init                              0x08004d64   Section        0  gd32c10x_gpio.o(i.gpio_init)
-    i.gpio_input_bit_get                     0x08004e20   Section        0  gd32c10x_gpio.o(i.gpio_input_bit_get)
-    i.gpio_pin_remap_config                  0x08004e30   Section        0  gd32c10x_gpio.o(i.gpio_pin_remap_config)
-    i.heartbeat_pending                      0x08004ec0   Section        0  delay.o(i.heartbeat_pending)
-    i.heartbeat_timeout                      0x08004edc   Section        0  delay.o(i.heartbeat_timeout)
-    i.led_flash_config                       0x08004ef8   Section        0  delay.o(i.led_flash_config)
-    i.main                                   0x08004f60   Section        0  main.o(i.main)
-    i.nvic_irq_disable                       0x080051f0   Section        0  gd32c10x_misc.o(i.nvic_irq_disable)
-    i.nvic_irq_enable                        0x08005208   Section        0  gd32c10x_misc.o(i.nvic_irq_enable)
-    i.nvic_priority_group_set                0x080052b4   Section        0  gd32c10x_misc.o(i.nvic_priority_group_set)
-    i.nvic_vector_table_set                  0x080052c8   Section        0  gd32c10x_misc.o(i.nvic_vector_table_set)
-    i.params_init                            0x080052dc   Section        0  main.o(i.params_init)
-    i.rcu_periph_clock_enable                0x08005354   Section        0  gd32c10x_rcu.o(i.rcu_periph_clock_enable)
-    i.rcu_periph_reset_disable               0x08005374   Section        0  gd32c10x_rcu.o(i.rcu_periph_reset_disable)
-    i.rcu_periph_reset_enable                0x08005394   Section        0  gd32c10x_rcu.o(i.rcu_periph_reset_enable)
-    i.recv                                   0x080053b4   Section        0  vci.o(i.recv)
-    i.set_can_channel                        0x080053f8   Section        0  main.o(i.set_can_channel)
-    i.set_channel                            0x080054a0   Section        0  vci.o(i.set_channel)
-    i.set_filter                             0x080054c8   Section        0  vci.o(i.set_filter)
-    i.set_vci_status                         0x08005538   Section        0  main.o(i.set_vci_status)
-    i.setting                                0x08005544   Section        0  vci.o(i.setting)
-    i.spi_enable                             0x080055bc   Section        0  gd32c10x_spi.o(i.spi_enable)
-    i.spi_i2s_data_receive                   0x080055c6   Section        0  gd32c10x_spi.o(i.spi_i2s_data_receive)
-    i.spi_i2s_data_transmit                  0x080055ce   Section        0  gd32c10x_spi.o(i.spi_i2s_data_transmit)
-    i.spi_i2s_deinit                         0x080055d4   Section        0  gd32c10x_spi.o(i.spi_i2s_deinit)
-    i.spi_i2s_flag_get                       0x0800562c   Section        0  gd32c10x_spi.o(i.spi_i2s_flag_get)
-    i.spi_init                               0x0800563c   Section        0  gd32c10x_spi.o(i.spi_init)
-    i.system_clock_120m_hxtal                0x08005670   Section        0  system_gd32c10x.o(i.system_clock_120m_hxtal)
-    system_clock_120m_hxtal                  0x08005671   Thumb Code   226  system_gd32c10x.o(i.system_clock_120m_hxtal)
-    i.system_clock_config                    0x0800576c   Section        0  system_gd32c10x.o(i.system_clock_config)
-    system_clock_config                      0x0800576d   Thumb Code     8  system_gd32c10x.o(i.system_clock_config)
-    i.tim3_it                                0x08005774   Section        0  delay.o(i.tim3_it)
-    i.tim4_it                                0x08005820   Section        0  delay.o(i.tim4_it)
-    i.timer_auto_reload_shadow_disable       0x08005840   Section        0  gd32c10x_timer.o(i.timer_auto_reload_shadow_disable)
-    i.timer_channel_output_config            0x0800584c   Section        0  gd32c10x_timer.o(i.timer_channel_output_config)
-    i.timer_channel_output_mode_config       0x08005a38   Section        0  gd32c10x_timer.o(i.timer_channel_output_mode_config)
-    i.timer_channel_output_pulse_value_config 0x08005a92   Section        0  gd32c10x_timer.o(i.timer_channel_output_pulse_value_config)
-    i.timer_channel_output_shadow_config     0x08005ab8   Section        0  gd32c10x_timer.o(i.timer_channel_output_shadow_config)
-    i.timer_channel_output_struct_para_init  0x08005b12   Section        0  gd32c10x_timer.o(i.timer_channel_output_struct_para_init)
-    i.timer_deinit                           0x08005b24   Section        0  gd32c10x_timer.o(i.timer_deinit)
-    i.timer_disable                          0x08005ca8   Section        0  gd32c10x_timer.o(i.timer_disable)
-    i.timer_enable                           0x08005cb2   Section        0  gd32c10x_timer.o(i.timer_enable)
-    i.timer_init                             0x08005cbc   Section        0  gd32c10x_timer.o(i.timer_init)
-    i.timer_interrupt_enable                 0x08005d60   Section        0  gd32c10x_timer.o(i.timer_interrupt_enable)
-    i.timer_interrupt_flag_clear             0x08005d68   Section        0  gd32c10x_timer.o(i.timer_interrupt_flag_clear)
-    i.timer_primary_output_config            0x08005d6e   Section        0  gd32c10x_timer.o(i.timer_primary_output_config)
-    i.timer_struct_para_init                 0x08005d86   Section        0  gd32c10x_timer.o(i.timer_struct_para_init)
-    i.timing_config                          0x08005d9c   Section        0  delay.o(i.timing_config)
-    i.vci_can_init                           0x08005e04   Section        0  main.o(i.vci_can_init)
-    i.vci_can_stop                           0x08005e18   Section        0  main.o(i.vci_can_stop)
-    i.vci_ctl_recv                           0x08005e3c   Section        0  vci.o(i.vci_ctl_recv)
-    i.wifi_GetClients                        0x08005f08   Section        0  wifi.o(i.wifi_GetClients)
-    i.wifi_Init                              0x08005f44   Section        0  wifi.o(i.wifi_Init)
-    i.wifi_Module_Hardware_Reset             0x080060a4   Section        0  wifi.o(i.wifi_Module_Hardware_Reset)
-    i.wifi_SendData                          0x080060f0   Section        0  wifi.o(i.wifi_SendData)
-    i.wifi_SetupTCPServer                    0x08006154   Section        0  wifi.o(i.wifi_SetupTCPServer)
-    i.wifi_disableIT                         0x080061a4   Section        0  wifi.o(i.wifi_disableIT)
-    i.wifi_enableIT                          0x080061ae   Section        0  wifi.o(i.wifi_enableIT)
-    i.wifi_init_it                           0x080061bc   Section        0  wifi.o(i.wifi_init_it)
-    i.wifi_reset                             0x08006200   Section        0  wifi.o(i.wifi_reset)
-    i.wifi_spi_init                          0x0800621c   Section        0  wifi.o(i.wifi_spi_init)
-    .constdata                               0x080062b8   Section        7  gd32c10x_can.o(.constdata)
-    [Anonymous Symbol]                       0x080062bf   Section        0  M8266WIFIDrv_STM32F2xx.o(.rodata)
-    [Anonymous Symbol]                       0x080062df   Section        0  M8266WIFIDrv_STM32F2xx.o(.rodata.str1.1)
+    i.can_cmd_recv_send_iterate              0x08003540   Section        0  messages.o(i.can_cmd_recv_send_iterate)
+    i.can_cmd_send2can                       0x08003594   Section        0  messages.o(i.can_cmd_send2can)
+    i.can_cmd_sendonce                       0x080035f8   Section        0  messages.o(i.can_cmd_sendonce)
+    i.can_config                             0x08003624   Section        0  main.o(i.can_config)
+    i.can_deinit                             0x08003770   Section        0  gd32c10x_can.o(i.can_deinit)
+    i.can_fd_frequency_set                   0x080037a4   Section        0  gd32c10x_can.o(i.can_fd_frequency_set)
+    i.can_fd_init                            0x080037d6   Section        0  gd32c10x_can.o(i.can_fd_init)
+    i.can_filter_init                        0x080038cc   Section        0  gd32c10x_can.o(i.can_filter_init)
+    i.can_frequency_set                      0x080039dc   Section        0  gd32c10x_can.o(i.can_frequency_set)
+    i.can_gpio_config                        0x08003a50   Section        0  main.o(i.can_gpio_config)
+    i.can_init                               0x08003ae0   Section        0  gd32c10x_can.o(i.can_init)
+    i.can_interrupt_enable                   0x08003c84   Section        0  gd32c10x_can.o(i.can_interrupt_enable)
+    i.can_message_receive                    0x08003c8c   Section        0  gd32c10x_can.o(i.can_message_receive)
+    i.can_message_transmit                   0x08003e50   Section        0  gd32c10x_can.o(i.can_message_transmit)
+    i.can_msg_buffer_clear                   0x080040c4   Section        0  messages.o(i.can_msg_buffer_clear)
+    i.can_msg_recv                           0x080040e8   Section        0  messages.o(i.can_msg_recv)
+    i.can_msg_send2wifi                      0x0800419c   Section        0  messages.o(i.can_msg_send2wifi)
+    i.can_set_id_filter_extended             0x08004228   Section        0  main.o(i.can_set_id_filter_extended)
+    i.can_set_id_filter_standard             0x080042a8   Section        0  main.o(i.can_set_id_filter_standard)
+    i.can_struct_para_init                   0x08004338   Section        0  gd32c10x_can.o(i.can_struct_para_init)
+    i.can_transmission_stop                  0x0800441a   Section        0  gd32c10x_can.o(i.can_transmission_stop)
+    i.can_working_mode_set                   0x0800446a   Section        0  gd32c10x_can.o(i.can_working_mode_set)
+    i.clear_heartbeat_pending                0x08004514   Section        0  delay.o(i.clear_heartbeat_pending)
+    i.clear_heartbeat_timeout                0x08004520   Section        0  delay.o(i.clear_heartbeat_timeout)
+    i.clear_mailbox                          0x0800452c   Section        0  main.o(i.clear_mailbox)
+    i.current_time01ms                       0x0800454c   Section        0  delay.o(i.current_time01ms)
+    i.delay_ms                               0x08004564   Section        0  delay.o(i.delay_ms)
+    i.delay_us                               0x08004634   Section        0  delay.o(i.delay_us)
+    i.dev_can_baudrate_set                   0x08004690   Section        0  gd32c10x_can.o(i.dev_can_baudrate_set)
+    dev_can_baudrate_set                     0x08004691   Thumb Code   106  gd32c10x_can.o(i.dev_can_baudrate_set)
+    i.dev_can_fd_baudrate_set                0x08004724   Section        0  gd32c10x_can.o(i.dev_can_fd_baudrate_set)
+    dev_can_fd_baudrate_set                  0x08004725   Thumb Code   172  gd32c10x_can.o(i.dev_can_fd_baudrate_set)
+    i.device_firmware_upgrade                0x08004810   Section        0  vci.o(i.device_firmware_upgrade)
+    i.err_led                                0x08004a24   Section        0  main.o(i.err_led)
+    i.exti_init                              0x08004a4c   Section        0  gd32c10x_exti.o(i.exti_init)
+    i.exti_interrupt_flag_clear              0x08004b04   Section        0  gd32c10x_exti.o(i.exti_interrupt_flag_clear)
+    i.fmc_flag_clear                         0x08004b10   Section        0  gd32c10x_fmc.o(i.fmc_flag_clear)
+    i.fmc_lock                               0x08004b1c   Section        0  gd32c10x_fmc.o(i.fmc_lock)
+    i.fmc_page_erase                         0x08004b30   Section        0  gd32c10x_fmc.o(i.fmc_page_erase)
+    i.fmc_ready_wait                         0x08004b78   Section        0  gd32c10x_fmc.o(i.fmc_ready_wait)
+    fmc_ready_wait                           0x08004b79   Thumb Code    34  gd32c10x_fmc.o(i.fmc_ready_wait)
+    i.fmc_state_get                          0x08004b9c   Section        0  gd32c10x_fmc.o(i.fmc_state_get)
+    fmc_state_get                            0x08004b9d   Thumb Code    58  gd32c10x_fmc.o(i.fmc_state_get)
+    i.fmc_unlock                             0x08004bdc   Section        0  gd32c10x_fmc.o(i.fmc_unlock)
+    i.fmc_word_program                       0x08004c00   Section        0  gd32c10x_fmc.o(i.fmc_word_program)
+    i.get_vci_status                         0x08004c40   Section        0  main.o(i.get_vci_status)
+    i.gpio_bit_reset                         0x08004c4c   Section        0  gd32c10x_gpio.o(i.gpio_bit_reset)
+    i.gpio_bit_set                           0x08004c50   Section        0  gd32c10x_gpio.o(i.gpio_bit_set)
+    i.gpio_bit_write                         0x08004c54   Section        0  gd32c10x_gpio.o(i.gpio_bit_write)
+    i.gpio_exti_source_select                0x08004c60   Section        0  gd32c10x_gpio.o(i.gpio_exti_source_select)
+    i.gpio_init                              0x08004cf8   Section        0  gd32c10x_gpio.o(i.gpio_init)
+    i.gpio_input_bit_get                     0x08004db4   Section        0  gd32c10x_gpio.o(i.gpio_input_bit_get)
+    i.gpio_pin_remap_config                  0x08004dc4   Section        0  gd32c10x_gpio.o(i.gpio_pin_remap_config)
+    i.heartbeat_pending                      0x08004e54   Section        0  delay.o(i.heartbeat_pending)
+    i.heartbeat_timeout                      0x08004e70   Section        0  delay.o(i.heartbeat_timeout)
+    i.led_flash_config                       0x08004e8c   Section        0  delay.o(i.led_flash_config)
+    i.main                                   0x08004ef4   Section        0  main.o(i.main)
+    i.nvic_irq_disable                       0x08005164   Section        0  gd32c10x_misc.o(i.nvic_irq_disable)
+    i.nvic_irq_enable                        0x0800517c   Section        0  gd32c10x_misc.o(i.nvic_irq_enable)
+    i.nvic_priority_group_set                0x08005228   Section        0  gd32c10x_misc.o(i.nvic_priority_group_set)
+    i.nvic_vector_table_set                  0x0800523c   Section        0  gd32c10x_misc.o(i.nvic_vector_table_set)
+    i.params_init                            0x08005250   Section        0  main.o(i.params_init)
+    i.rcu_periph_clock_enable                0x080052c8   Section        0  gd32c10x_rcu.o(i.rcu_periph_clock_enable)
+    i.rcu_periph_reset_disable               0x080052e8   Section        0  gd32c10x_rcu.o(i.rcu_periph_reset_disable)
+    i.rcu_periph_reset_enable                0x08005308   Section        0  gd32c10x_rcu.o(i.rcu_periph_reset_enable)
+    i.recv                                   0x08005328   Section        0  vci.o(i.recv)
+    i.set_can_channel                        0x0800536c   Section        0  main.o(i.set_can_channel)
+    i.set_channel                            0x08005414   Section        0  vci.o(i.set_channel)
+    i.set_filter                             0x0800543c   Section        0  vci.o(i.set_filter)
+    i.set_vci_status                         0x080054ac   Section        0  main.o(i.set_vci_status)
+    i.setting                                0x080054b8   Section        0  vci.o(i.setting)
+    i.spi_enable                             0x08005530   Section        0  gd32c10x_spi.o(i.spi_enable)
+    i.spi_i2s_data_receive                   0x0800553a   Section        0  gd32c10x_spi.o(i.spi_i2s_data_receive)
+    i.spi_i2s_data_transmit                  0x08005542   Section        0  gd32c10x_spi.o(i.spi_i2s_data_transmit)
+    i.spi_i2s_deinit                         0x08005548   Section        0  gd32c10x_spi.o(i.spi_i2s_deinit)
+    i.spi_i2s_flag_get                       0x080055a0   Section        0  gd32c10x_spi.o(i.spi_i2s_flag_get)
+    i.spi_init                               0x080055b0   Section        0  gd32c10x_spi.o(i.spi_init)
+    i.system_clock_120m_hxtal                0x080055e4   Section        0  system_gd32c10x.o(i.system_clock_120m_hxtal)
+    system_clock_120m_hxtal                  0x080055e5   Thumb Code   226  system_gd32c10x.o(i.system_clock_120m_hxtal)
+    i.system_clock_config                    0x080056e0   Section        0  system_gd32c10x.o(i.system_clock_config)
+    system_clock_config                      0x080056e1   Thumb Code     8  system_gd32c10x.o(i.system_clock_config)
+    i.tim3_it                                0x080056e8   Section        0  delay.o(i.tim3_it)
+    i.tim4_it                                0x08005798   Section        0  delay.o(i.tim4_it)
+    i.timer_auto_reload_shadow_disable       0x080057b8   Section        0  gd32c10x_timer.o(i.timer_auto_reload_shadow_disable)
+    i.timer_channel_output_config            0x080057c4   Section        0  gd32c10x_timer.o(i.timer_channel_output_config)
+    i.timer_channel_output_mode_config       0x080059b0   Section        0  gd32c10x_timer.o(i.timer_channel_output_mode_config)
+    i.timer_channel_output_pulse_value_config 0x08005a0a   Section        0  gd32c10x_timer.o(i.timer_channel_output_pulse_value_config)
+    i.timer_channel_output_shadow_config     0x08005a30   Section        0  gd32c10x_timer.o(i.timer_channel_output_shadow_config)
+    i.timer_channel_output_struct_para_init  0x08005a8a   Section        0  gd32c10x_timer.o(i.timer_channel_output_struct_para_init)
+    i.timer_deinit                           0x08005a9c   Section        0  gd32c10x_timer.o(i.timer_deinit)
+    i.timer_disable                          0x08005c20   Section        0  gd32c10x_timer.o(i.timer_disable)
+    i.timer_enable                           0x08005c2a   Section        0  gd32c10x_timer.o(i.timer_enable)
+    i.timer_init                             0x08005c34   Section        0  gd32c10x_timer.o(i.timer_init)
+    i.timer_interrupt_enable                 0x08005cd8   Section        0  gd32c10x_timer.o(i.timer_interrupt_enable)
+    i.timer_interrupt_flag_clear             0x08005ce0   Section        0  gd32c10x_timer.o(i.timer_interrupt_flag_clear)
+    i.timer_primary_output_config            0x08005ce6   Section        0  gd32c10x_timer.o(i.timer_primary_output_config)
+    i.timer_struct_para_init                 0x08005cfe   Section        0  gd32c10x_timer.o(i.timer_struct_para_init)
+    i.timing_config                          0x08005d14   Section        0  delay.o(i.timing_config)
+    i.vci_can_init                           0x08005d7c   Section        0  main.o(i.vci_can_init)
+    i.vci_can_stop                           0x08005d90   Section        0  main.o(i.vci_can_stop)
+    i.vci_ctl_recv                           0x08005db4   Section        0  vci.o(i.vci_ctl_recv)
+    i.wifi_GetClients                        0x08005e80   Section        0  wifi.o(i.wifi_GetClients)
+    i.wifi_Init                              0x08005ebc   Section        0  wifi.o(i.wifi_Init)
+    i.wifi_Module_Hardware_Reset             0x08006018   Section        0  wifi.o(i.wifi_Module_Hardware_Reset)
+    i.wifi_SendData                          0x08006064   Section        0  wifi.o(i.wifi_SendData)
+    i.wifi_SetupTCPServer                    0x080060c8   Section        0  wifi.o(i.wifi_SetupTCPServer)
+    i.wifi_disableIT                         0x08006118   Section        0  wifi.o(i.wifi_disableIT)
+    i.wifi_enableIT                          0x08006122   Section        0  wifi.o(i.wifi_enableIT)
+    i.wifi_init_it                           0x08006130   Section        0  wifi.o(i.wifi_init_it)
+    i.wifi_spi_init                          0x08006174   Section        0  wifi.o(i.wifi_spi_init)
+    .constdata                               0x08006210   Section        7  gd32c10x_can.o(.constdata)
+    [Anonymous Symbol]                       0x08006217   Section        0  M8266WIFIDrv_STM32F2xx.o(.rodata)
+    [Anonymous Symbol]                       0x08006237   Section        0  M8266WIFIDrv_STM32F2xx.o(.rodata.str1.1)
     .data                                    0x20000000   Section       48  main.o(.data)
     vci_status                               0x2000001d   Data           1  main.o(.data)
     beep_startup1                            0x2000001e   Data           3  main.o(.data)
@@ -1665,7 +1669,7 @@ Image Symbol Table
     heartbeat_send_c                         0x20000052   Data           1  delay.o(.data)
     heartbeat_recv_i                         0x20000053   Data           1  delay.o(.data)
     heartbeat_recv_c                         0x20000054   Data           1  delay.o(.data)
-    .data                                    0x20000055   Section        9  messages.o(.data)
+    .data                                    0x20000055   Section       10  messages.o(.data)
     can_recv_serial                          0x20000056   Data           1  messages.o(.data)
     can_send_serial                          0x20000057   Data           1  messages.o(.data)
     can_msg_recv_start                       0x20000058   Data           1  messages.o(.data)
@@ -1673,7 +1677,7 @@ Image Symbol Table
     can_cmd_recv_start                       0x2000005a   Data           1  messages.o(.data)
     can_cmd_recv_count                       0x2000005b   Data           1  messages.o(.data)
     can_cmd_send_ack                         0x2000005c   Data           1  messages.o(.data)
-    .data                                    0x2000005e   Section      221  vci.o(.data)
+    .data                                    0x2000005f   Section      221  vci.o(.data)
     .data                                    0x2000013c   Section       66  buzzer.o(.data)
     _tone_period                             0x20000144   Data          58  buzzer.o(.data)
     [Anonymous Symbol]                       0x2000017e   Section        0  M8266WIFIDrv_STM32F2xx.o(.data)
@@ -1820,108 +1824,108 @@ Image Symbol Table
     buzzer_wait_until_idle                   0x08003425   Thumb Code    12  buzzer.o(i.buzzer_wait_until_idle)
     can1_filter_start_bank                   0x08003435   Thumb Code    52  gd32c10x_can.o(i.can1_filter_start_bank)
     can_clear_filter                         0x0800346d   Thumb Code   136  main.o(i.can_clear_filter)
-    can_cmd_recv                             0x08003501   Thumb Code    54  messages.o(i.can_cmd_recv)
-    can_cmd_recv_iterate                     0x0800353d   Thumb Code   186  messages.o(i.can_cmd_recv_iterate)
-    can_cmd_send2can                         0x0800360d   Thumb Code   114  messages.o(i.can_cmd_send2can)
-    can_config                               0x08003691   Thumb Code   302  main.o(i.can_config)
-    can_deinit                               0x080037dd   Thumb Code    46  gd32c10x_can.o(i.can_deinit)
-    can_fd_frequency_set                     0x08003811   Thumb Code    50  gd32c10x_can.o(i.can_fd_frequency_set)
-    can_fd_init                              0x08003843   Thumb Code   244  gd32c10x_can.o(i.can_fd_init)
-    can_filter_init                          0x08003939   Thumb Code   262  gd32c10x_can.o(i.can_filter_init)
-    can_frequency_set                        0x08003a49   Thumb Code   112  gd32c10x_can.o(i.can_frequency_set)
-    can_gpio_config                          0x08003abd   Thumb Code   134  main.o(i.can_gpio_config)
-    can_init                                 0x08003b4d   Thumb Code   420  gd32c10x_can.o(i.can_init)
-    can_interrupt_enable                     0x08003cf1   Thumb Code     8  gd32c10x_can.o(i.can_interrupt_enable)
-    can_message_receive                      0x08003cf9   Thumb Code   448  gd32c10x_can.o(i.can_message_receive)
-    can_message_transmit                     0x08003ebd   Thumb Code   620  gd32c10x_can.o(i.can_message_transmit)
-    can_msg_buffer_clear                     0x08004131   Thumb Code    20  messages.o(i.can_msg_buffer_clear)
-    can_msg_recv                             0x08004155   Thumb Code   154  messages.o(i.can_msg_recv)
-    can_msg_send2wifi                        0x08004209   Thumb Code   124  messages.o(i.can_msg_send2wifi)
-    can_set_id_filter_extended               0x08004295   Thumb Code   124  main.o(i.can_set_id_filter_extended)
-    can_set_id_filter_standard               0x08004315   Thumb Code   140  main.o(i.can_set_id_filter_standard)
-    can_struct_para_init                     0x080043a5   Thumb Code   226  gd32c10x_can.o(i.can_struct_para_init)
-    can_transmission_stop                    0x08004487   Thumb Code    80  gd32c10x_can.o(i.can_transmission_stop)
-    can_working_mode_set                     0x080044d7   Thumb Code   168  gd32c10x_can.o(i.can_working_mode_set)
-    clear_heartbeat_pending                  0x08004581   Thumb Code     8  delay.o(i.clear_heartbeat_pending)
-    clear_heartbeat_timeout                  0x0800458d   Thumb Code     8  delay.o(i.clear_heartbeat_timeout)
-    clear_mailbox                            0x08004599   Thumb Code    28  main.o(i.clear_mailbox)
-    current_time01ms                         0x080045b9   Thumb Code    14  delay.o(i.current_time01ms)
-    delay_ms                                 0x080045d1   Thumb Code   196  delay.o(i.delay_ms)
-    delay_us                                 0x080046a1   Thumb Code    86  delay.o(i.delay_us)
-    device_firmware_upgrade                  0x0800487d   Thumb Code   504  vci.o(i.device_firmware_upgrade)
-    err_led                                  0x08004a91   Thumb Code    34  main.o(i.err_led)
-    exti_init                                0x08004ab9   Thumb Code   178  gd32c10x_exti.o(i.exti_init)
-    exti_interrupt_flag_clear                0x08004b71   Thumb Code     6  gd32c10x_exti.o(i.exti_interrupt_flag_clear)
-    fmc_flag_clear                           0x08004b7d   Thumb Code     6  gd32c10x_fmc.o(i.fmc_flag_clear)
-    fmc_lock                                 0x08004b89   Thumb Code    14  gd32c10x_fmc.o(i.fmc_lock)
-    fmc_page_erase                           0x08004b9d   Thumb Code    66  gd32c10x_fmc.o(i.fmc_page_erase)
-    fmc_unlock                               0x08004c49   Thumb Code    22  gd32c10x_fmc.o(i.fmc_unlock)
-    fmc_word_program                         0x08004c6d   Thumb Code    58  gd32c10x_fmc.o(i.fmc_word_program)
-    get_vci_status                           0x08004cad   Thumb Code     6  main.o(i.get_vci_status)
-    gpio_bit_reset                           0x08004cb9   Thumb Code     4  gd32c10x_gpio.o(i.gpio_bit_reset)
-    gpio_bit_set                             0x08004cbd   Thumb Code     4  gd32c10x_gpio.o(i.gpio_bit_set)
-    gpio_bit_write                           0x08004cc1   Thumb Code    10  gd32c10x_gpio.o(i.gpio_bit_write)
-    gpio_exti_source_select                  0x08004ccd   Thumb Code   146  gd32c10x_gpio.o(i.gpio_exti_source_select)
-    gpio_init                                0x08004d65   Thumb Code   188  gd32c10x_gpio.o(i.gpio_init)
-    gpio_input_bit_get                       0x08004e21   Thumb Code    16  gd32c10x_gpio.o(i.gpio_input_bit_get)
-    gpio_pin_remap_config                    0x08004e31   Thumb Code   138  gd32c10x_gpio.o(i.gpio_pin_remap_config)
-    heartbeat_pending                        0x08004ec1   Thumb Code    20  delay.o(i.heartbeat_pending)
-    heartbeat_timeout                        0x08004edd   Thumb Code    20  delay.o(i.heartbeat_timeout)
-    led_flash_config                         0x08004ef9   Thumb Code    98  delay.o(i.led_flash_config)
-    main                                     0x08004f61   Thumb Code   612  main.o(i.main)
-    nvic_irq_disable                         0x080051f1   Thumb Code    18  gd32c10x_misc.o(i.nvic_irq_disable)
-    nvic_irq_enable                          0x08005209   Thumb Code   162  gd32c10x_misc.o(i.nvic_irq_enable)
-    nvic_priority_group_set                  0x080052b5   Thumb Code    10  gd32c10x_misc.o(i.nvic_priority_group_set)
-    nvic_vector_table_set                    0x080052c9   Thumb Code    12  gd32c10x_misc.o(i.nvic_vector_table_set)
-    params_init                              0x080052dd   Thumb Code    74  main.o(i.params_init)
-    rcu_periph_clock_enable                  0x08005355   Thumb Code    28  gd32c10x_rcu.o(i.rcu_periph_clock_enable)
-    rcu_periph_reset_disable                 0x08005375   Thumb Code    28  gd32c10x_rcu.o(i.rcu_periph_reset_disable)
-    rcu_periph_reset_enable                  0x08005395   Thumb Code    28  gd32c10x_rcu.o(i.rcu_periph_reset_enable)
-    recv                                     0x080053b5   Thumb Code    58  vci.o(i.recv)
-    set_can_channel                          0x080053f9   Thumb Code   150  main.o(i.set_can_channel)
-    set_channel                              0x080054a1   Thumb Code    30  vci.o(i.set_channel)
-    set_filter                               0x080054c9   Thumb Code   102  vci.o(i.set_filter)
-    set_vci_status                           0x08005539   Thumb Code     6  main.o(i.set_vci_status)
-    setting                                  0x08005545   Thumb Code    92  vci.o(i.setting)
-    spi_enable                               0x080055bd   Thumb Code    10  gd32c10x_spi.o(i.spi_enable)
-    spi_i2s_data_receive                     0x080055c7   Thumb Code     8  gd32c10x_spi.o(i.spi_i2s_data_receive)
-    spi_i2s_data_transmit                    0x080055cf   Thumb Code     4  gd32c10x_spi.o(i.spi_i2s_data_transmit)
-    spi_i2s_deinit                           0x080055d5   Thumb Code    82  gd32c10x_spi.o(i.spi_i2s_deinit)
-    spi_i2s_flag_get                         0x0800562d   Thumb Code    16  gd32c10x_spi.o(i.spi_i2s_flag_get)
-    spi_init                                 0x0800563d   Thumb Code    50  gd32c10x_spi.o(i.spi_init)
-    tim3_it                                  0x08005775   Thumb Code   134  delay.o(i.tim3_it)
-    tim4_it                                  0x08005821   Thumb Code    22  delay.o(i.tim4_it)
-    timer_auto_reload_shadow_disable         0x08005841   Thumb Code    10  gd32c10x_timer.o(i.timer_auto_reload_shadow_disable)
-    timer_channel_output_config              0x0800584d   Thumb Code   484  gd32c10x_timer.o(i.timer_channel_output_config)
-    timer_channel_output_mode_config         0x08005a39   Thumb Code    90  gd32c10x_timer.o(i.timer_channel_output_mode_config)
-    timer_channel_output_pulse_value_config  0x08005a93   Thumb Code    38  gd32c10x_timer.o(i.timer_channel_output_pulse_value_config)
-    timer_channel_output_shadow_config       0x08005ab9   Thumb Code    90  gd32c10x_timer.o(i.timer_channel_output_shadow_config)
-    timer_channel_output_struct_para_init    0x08005b13   Thumb Code    16  gd32c10x_timer.o(i.timer_channel_output_struct_para_init)
-    timer_deinit                             0x08005b25   Thumb Code   374  gd32c10x_timer.o(i.timer_deinit)
-    timer_disable                            0x08005ca9   Thumb Code    10  gd32c10x_timer.o(i.timer_disable)
-    timer_enable                             0x08005cb3   Thumb Code    10  gd32c10x_timer.o(i.timer_enable)
-    timer_init                               0x08005cbd   Thumb Code   134  gd32c10x_timer.o(i.timer_init)
-    timer_interrupt_enable                   0x08005d61   Thumb Code     8  gd32c10x_timer.o(i.timer_interrupt_enable)
-    timer_interrupt_flag_clear               0x08005d69   Thumb Code     6  gd32c10x_timer.o(i.timer_interrupt_flag_clear)
-    timer_primary_output_config              0x08005d6f   Thumb Code    24  gd32c10x_timer.o(i.timer_primary_output_config)
-    timer_struct_para_init                   0x08005d87   Thumb Code    22  gd32c10x_timer.o(i.timer_struct_para_init)
-    timing_config                            0x08005d9d   Thumb Code    98  delay.o(i.timing_config)
-    vci_can_init                             0x08005e05   Thumb Code    18  main.o(i.vci_can_init)
-    vci_can_stop                             0x08005e19   Thumb Code    28  main.o(i.vci_can_stop)
-    vci_ctl_recv                             0x08005e3d   Thumb Code   190  vci.o(i.vci_ctl_recv)
-    wifi_GetClients                          0x08005f09   Thumb Code    54  wifi.o(i.wifi_GetClients)
-    wifi_Init                                0x08005f45   Thumb Code   290  wifi.o(i.wifi_Init)
-    wifi_Module_Hardware_Reset               0x080060a5   Thumb Code    72  wifi.o(i.wifi_Module_Hardware_Reset)
-    wifi_SendData                            0x080060f1   Thumb Code    92  wifi.o(i.wifi_SendData)
-    wifi_SetupTCPServer                      0x08006155   Thumb Code    68  wifi.o(i.wifi_SetupTCPServer)
-    wifi_disableIT                           0x080061a5   Thumb Code    10  wifi.o(i.wifi_disableIT)
-    wifi_enableIT                            0x080061af   Thumb Code    14  wifi.o(i.wifi_enableIT)
-    wifi_init_it                             0x080061bd   Thumb Code    64  wifi.o(i.wifi_init_it)
-    wifi_reset                               0x08006201   Thumb Code    22  wifi.o(i.wifi_reset)
-    wifi_spi_init                            0x0800621d   Thumb Code   142  wifi.o(i.wifi_spi_init)
-    g_can_fdlength_table                     0x080062b8   Data           7  gd32c10x_can.o(.constdata)
-    Region$$Table$$Base                      0x08006340   Number         0  anon$$obj.o(Region$$Table)
-    Region$$Table$$Limit                     0x08006360   Number         0  anon$$obj.o(Region$$Table)
+    can_cmd_recv                             0x08003501   Thumb Code    60  messages.o(i.can_cmd_recv)
+    can_cmd_recv_send_iterate                0x08003541   Thumb Code    82  messages.o(i.can_cmd_recv_send_iterate)
+    can_cmd_send2can                         0x08003595   Thumb Code    88  messages.o(i.can_cmd_send2can)
+    can_cmd_sendonce                         0x080035f9   Thumb Code    38  messages.o(i.can_cmd_sendonce)
+    can_config                               0x08003625   Thumb Code   302  main.o(i.can_config)
+    can_deinit                               0x08003771   Thumb Code    46  gd32c10x_can.o(i.can_deinit)
+    can_fd_frequency_set                     0x080037a5   Thumb Code    50  gd32c10x_can.o(i.can_fd_frequency_set)
+    can_fd_init                              0x080037d7   Thumb Code   244  gd32c10x_can.o(i.can_fd_init)
+    can_filter_init                          0x080038cd   Thumb Code   262  gd32c10x_can.o(i.can_filter_init)
+    can_frequency_set                        0x080039dd   Thumb Code   112  gd32c10x_can.o(i.can_frequency_set)
+    can_gpio_config                          0x08003a51   Thumb Code   134  main.o(i.can_gpio_config)
+    can_init                                 0x08003ae1   Thumb Code   420  gd32c10x_can.o(i.can_init)
+    can_interrupt_enable                     0x08003c85   Thumb Code     8  gd32c10x_can.o(i.can_interrupt_enable)
+    can_message_receive                      0x08003c8d   Thumb Code   448  gd32c10x_can.o(i.can_message_receive)
+    can_message_transmit                     0x08003e51   Thumb Code   620  gd32c10x_can.o(i.can_message_transmit)
+    can_msg_buffer_clear                     0x080040c5   Thumb Code    20  messages.o(i.can_msg_buffer_clear)
+    can_msg_recv                             0x080040e9   Thumb Code   154  messages.o(i.can_msg_recv)
+    can_msg_send2wifi                        0x0800419d   Thumb Code   124  messages.o(i.can_msg_send2wifi)
+    can_set_id_filter_extended               0x08004229   Thumb Code   124  main.o(i.can_set_id_filter_extended)
+    can_set_id_filter_standard               0x080042a9   Thumb Code   140  main.o(i.can_set_id_filter_standard)
+    can_struct_para_init                     0x08004339   Thumb Code   226  gd32c10x_can.o(i.can_struct_para_init)
+    can_transmission_stop                    0x0800441b   Thumb Code    80  gd32c10x_can.o(i.can_transmission_stop)
+    can_working_mode_set                     0x0800446b   Thumb Code   168  gd32c10x_can.o(i.can_working_mode_set)
+    clear_heartbeat_pending                  0x08004515   Thumb Code     8  delay.o(i.clear_heartbeat_pending)
+    clear_heartbeat_timeout                  0x08004521   Thumb Code     8  delay.o(i.clear_heartbeat_timeout)
+    clear_mailbox                            0x0800452d   Thumb Code    28  main.o(i.clear_mailbox)
+    current_time01ms                         0x0800454d   Thumb Code    14  delay.o(i.current_time01ms)
+    delay_ms                                 0x08004565   Thumb Code   196  delay.o(i.delay_ms)
+    delay_us                                 0x08004635   Thumb Code    86  delay.o(i.delay_us)
+    device_firmware_upgrade                  0x08004811   Thumb Code   504  vci.o(i.device_firmware_upgrade)
+    err_led                                  0x08004a25   Thumb Code    34  main.o(i.err_led)
+    exti_init                                0x08004a4d   Thumb Code   178  gd32c10x_exti.o(i.exti_init)
+    exti_interrupt_flag_clear                0x08004b05   Thumb Code     6  gd32c10x_exti.o(i.exti_interrupt_flag_clear)
+    fmc_flag_clear                           0x08004b11   Thumb Code     6  gd32c10x_fmc.o(i.fmc_flag_clear)
+    fmc_lock                                 0x08004b1d   Thumb Code    14  gd32c10x_fmc.o(i.fmc_lock)
+    fmc_page_erase                           0x08004b31   Thumb Code    66  gd32c10x_fmc.o(i.fmc_page_erase)
+    fmc_unlock                               0x08004bdd   Thumb Code    22  gd32c10x_fmc.o(i.fmc_unlock)
+    fmc_word_program                         0x08004c01   Thumb Code    58  gd32c10x_fmc.o(i.fmc_word_program)
+    get_vci_status                           0x08004c41   Thumb Code     6  main.o(i.get_vci_status)
+    gpio_bit_reset                           0x08004c4d   Thumb Code     4  gd32c10x_gpio.o(i.gpio_bit_reset)
+    gpio_bit_set                             0x08004c51   Thumb Code     4  gd32c10x_gpio.o(i.gpio_bit_set)
+    gpio_bit_write                           0x08004c55   Thumb Code    10  gd32c10x_gpio.o(i.gpio_bit_write)
+    gpio_exti_source_select                  0x08004c61   Thumb Code   146  gd32c10x_gpio.o(i.gpio_exti_source_select)
+    gpio_init                                0x08004cf9   Thumb Code   188  gd32c10x_gpio.o(i.gpio_init)
+    gpio_input_bit_get                       0x08004db5   Thumb Code    16  gd32c10x_gpio.o(i.gpio_input_bit_get)
+    gpio_pin_remap_config                    0x08004dc5   Thumb Code   138  gd32c10x_gpio.o(i.gpio_pin_remap_config)
+    heartbeat_pending                        0x08004e55   Thumb Code    20  delay.o(i.heartbeat_pending)
+    heartbeat_timeout                        0x08004e71   Thumb Code    20  delay.o(i.heartbeat_timeout)
+    led_flash_config                         0x08004e8d   Thumb Code    98  delay.o(i.led_flash_config)
+    main                                     0x08004ef5   Thumb Code   570  main.o(i.main)
+    nvic_irq_disable                         0x08005165   Thumb Code    18  gd32c10x_misc.o(i.nvic_irq_disable)
+    nvic_irq_enable                          0x0800517d   Thumb Code   162  gd32c10x_misc.o(i.nvic_irq_enable)
+    nvic_priority_group_set                  0x08005229   Thumb Code    10  gd32c10x_misc.o(i.nvic_priority_group_set)
+    nvic_vector_table_set                    0x0800523d   Thumb Code    12  gd32c10x_misc.o(i.nvic_vector_table_set)
+    params_init                              0x08005251   Thumb Code    74  main.o(i.params_init)
+    rcu_periph_clock_enable                  0x080052c9   Thumb Code    28  gd32c10x_rcu.o(i.rcu_periph_clock_enable)
+    rcu_periph_reset_disable                 0x080052e9   Thumb Code    28  gd32c10x_rcu.o(i.rcu_periph_reset_disable)
+    rcu_periph_reset_enable                  0x08005309   Thumb Code    28  gd32c10x_rcu.o(i.rcu_periph_reset_enable)
+    recv                                     0x08005329   Thumb Code    58  vci.o(i.recv)
+    set_can_channel                          0x0800536d   Thumb Code   150  main.o(i.set_can_channel)
+    set_channel                              0x08005415   Thumb Code    30  vci.o(i.set_channel)
+    set_filter                               0x0800543d   Thumb Code   102  vci.o(i.set_filter)
+    set_vci_status                           0x080054ad   Thumb Code     6  main.o(i.set_vci_status)
+    setting                                  0x080054b9   Thumb Code    92  vci.o(i.setting)
+    spi_enable                               0x08005531   Thumb Code    10  gd32c10x_spi.o(i.spi_enable)
+    spi_i2s_data_receive                     0x0800553b   Thumb Code     8  gd32c10x_spi.o(i.spi_i2s_data_receive)
+    spi_i2s_data_transmit                    0x08005543   Thumb Code     4  gd32c10x_spi.o(i.spi_i2s_data_transmit)
+    spi_i2s_deinit                           0x08005549   Thumb Code    82  gd32c10x_spi.o(i.spi_i2s_deinit)
+    spi_i2s_flag_get                         0x080055a1   Thumb Code    16  gd32c10x_spi.o(i.spi_i2s_flag_get)
+    spi_init                                 0x080055b1   Thumb Code    50  gd32c10x_spi.o(i.spi_init)
+    tim3_it                                  0x080056e9   Thumb Code   140  delay.o(i.tim3_it)
+    tim4_it                                  0x08005799   Thumb Code    22  delay.o(i.tim4_it)
+    timer_auto_reload_shadow_disable         0x080057b9   Thumb Code    10  gd32c10x_timer.o(i.timer_auto_reload_shadow_disable)
+    timer_channel_output_config              0x080057c5   Thumb Code   484  gd32c10x_timer.o(i.timer_channel_output_config)
+    timer_channel_output_mode_config         0x080059b1   Thumb Code    90  gd32c10x_timer.o(i.timer_channel_output_mode_config)
+    timer_channel_output_pulse_value_config  0x08005a0b   Thumb Code    38  gd32c10x_timer.o(i.timer_channel_output_pulse_value_config)
+    timer_channel_output_shadow_config       0x08005a31   Thumb Code    90  gd32c10x_timer.o(i.timer_channel_output_shadow_config)
+    timer_channel_output_struct_para_init    0x08005a8b   Thumb Code    16  gd32c10x_timer.o(i.timer_channel_output_struct_para_init)
+    timer_deinit                             0x08005a9d   Thumb Code   374  gd32c10x_timer.o(i.timer_deinit)
+    timer_disable                            0x08005c21   Thumb Code    10  gd32c10x_timer.o(i.timer_disable)
+    timer_enable                             0x08005c2b   Thumb Code    10  gd32c10x_timer.o(i.timer_enable)
+    timer_init                               0x08005c35   Thumb Code   134  gd32c10x_timer.o(i.timer_init)
+    timer_interrupt_enable                   0x08005cd9   Thumb Code     8  gd32c10x_timer.o(i.timer_interrupt_enable)
+    timer_interrupt_flag_clear               0x08005ce1   Thumb Code     6  gd32c10x_timer.o(i.timer_interrupt_flag_clear)
+    timer_primary_output_config              0x08005ce7   Thumb Code    24  gd32c10x_timer.o(i.timer_primary_output_config)
+    timer_struct_para_init                   0x08005cff   Thumb Code    22  gd32c10x_timer.o(i.timer_struct_para_init)
+    timing_config                            0x08005d15   Thumb Code    98  delay.o(i.timing_config)
+    vci_can_init                             0x08005d7d   Thumb Code    18  main.o(i.vci_can_init)
+    vci_can_stop                             0x08005d91   Thumb Code    28  main.o(i.vci_can_stop)
+    vci_ctl_recv                             0x08005db5   Thumb Code   190  vci.o(i.vci_ctl_recv)
+    wifi_GetClients                          0x08005e81   Thumb Code    54  wifi.o(i.wifi_GetClients)
+    wifi_Init                                0x08005ebd   Thumb Code   288  wifi.o(i.wifi_Init)
+    wifi_Module_Hardware_Reset               0x08006019   Thumb Code    72  wifi.o(i.wifi_Module_Hardware_Reset)
+    wifi_SendData                            0x08006065   Thumb Code    92  wifi.o(i.wifi_SendData)
+    wifi_SetupTCPServer                      0x080060c9   Thumb Code    68  wifi.o(i.wifi_SetupTCPServer)
+    wifi_disableIT                           0x08006119   Thumb Code    10  wifi.o(i.wifi_disableIT)
+    wifi_enableIT                            0x08006123   Thumb Code    14  wifi.o(i.wifi_enableIT)
+    wifi_init_it                             0x08006131   Thumb Code    64  wifi.o(i.wifi_init_it)
+    wifi_spi_init                            0x08006175   Thumb Code   142  wifi.o(i.wifi_spi_init)
+    g_can_fdlength_table                     0x08006210   Data           7  gd32c10x_can.o(.constdata)
+    Region$$Table$$Base                      0x08006298   Number         0  anon$$obj.o(Region$$Table)
+    Region$$Table$$Limit                     0x080062b8   Number         0  anon$$obj.o(Region$$Table)
     can0_id_filter_count                     0x20000000   Data           1  main.o(.data)
     can1_id_filter_count                     0x20000001   Data           1  main.o(.data)
     current_channel                          0x20000002   Data           1  main.o(.data)
@@ -1939,9 +1943,10 @@ Image Symbol Table
     wifi_status                              0x20000047   Data           1  wifi.o(.data)
     messaging_status                         0x20000055   Data           1  messages.o(.data)
     can_traffic_indicator                    0x2000005d   Data           1  messages.o(.data)
-    dfu_data_serial                          0x2000005e   Data           1  vci.o(.data)
-    success_beep                             0x2000005f   Data         219  vci.o(.data)
-    vci_ctl_type_header                      0x2000013a   Data           1  vci.o(.data)
+    offset                                   0x2000005e   Data           1  messages.o(.data)
+    dfu_data_serial                          0x2000005f   Data           1  vci.o(.data)
+    success_beep                             0x20000060   Data         219  vci.o(.data)
+    vci_ctl_type_header                      0x2000013b   Data           1  vci.o(.data)
     buzzer_running                           0x2000013c   Data           1  buzzer.o(.data)
     buzzer_duty                              0x2000013d   Data           1  buzzer.o(.data)
     total_note                               0x2000013e   Data           1  buzzer.o(.data)
@@ -1963,50 +1968,50 @@ Memory Map of the image
 
   Image Entry point : 0x08001151
 
-  Load Region LR_IROM1 (Base: 0x08001000, Size: 0x000054f4, Max: 0x00020000, ABSOLUTE, COMPRESSED[0x00005434])
+  Load Region LR_IROM1 (Base: 0x08001000, Size: 0x0000544c, Max: 0x00020000, ABSOLUTE, COMPRESSED[0x00005390])
 
-    Execution Region ER_IROM1 (Exec base: 0x08001000, Load base: 0x08001000, Size: 0x00005360, Max: 0x00020000, ABSOLUTE)
+    Execution Region ER_IROM1 (Exec base: 0x08001000, Load base: 0x08001000, Size: 0x000052b8, Max: 0x00020000, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
-    0x08001000   0x08001000   0x00000150   Data   RO         4457    RESET               startup_gd32c10x.o
-    0x08001150   0x08001150   0x00000000   Code   RO         4640  * .ARM.Collect$$$$00000000  mc_w.l(entry.o)
-    0x08001150   0x08001150   0x00000004   Code   RO         4647    .ARM.Collect$$$$00000001  mc_w.l(entry2.o)
-    0x08001154   0x08001154   0x00000004   Code   RO         4650    .ARM.Collect$$$$00000004  mc_w.l(entry5.o)
-    0x08001158   0x08001158   0x00000000   Code   RO         4652    .ARM.Collect$$$$00000008  mc_w.l(entry7b.o)
-    0x08001158   0x08001158   0x00000000   Code   RO         4654    .ARM.Collect$$$$0000000A  mc_w.l(entry8b.o)
-    0x08001158   0x08001158   0x00000008   Code   RO         4655    .ARM.Collect$$$$0000000B  mc_w.l(entry9a.o)
-    0x08001160   0x08001160   0x00000004   Code   RO         4662    .ARM.Collect$$$$0000000E  mc_w.l(entry12b.o)
-    0x08001164   0x08001164   0x00000000   Code   RO         4657    .ARM.Collect$$$$0000000F  mc_w.l(entry10a.o)
-    0x08001164   0x08001164   0x00000000   Code   RO         4659    .ARM.Collect$$$$00000011  mc_w.l(entry11a.o)
-    0x08001164   0x08001164   0x00000004   Code   RO         4648    .ARM.Collect$$$$00002712  mc_w.l(entry2.o)
-    0x08001168   0x08001168   0x00000024   Code   RO         4458    .text               startup_gd32c10x.o
-    0x0800118c   0x0800118c   0x00000754   Code   RO         4523    .text               M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
-    0x080018e0   0x080018e0   0x00000024   Code   RO         4643    .text               mc_w.l(memcpya.o)
-    0x08001904   0x08001904   0x00000024   Code   RO         4663    .text               mc_w.l(init.o)
-    0x08001928   0x08001928   0x00000056   Code   RO         4673    .text               mc_w.l(__dczerorl2.o)
+    0x08001000   0x08001000   0x00000150   Data   RO         4476    RESET               startup_gd32c10x.o
+    0x08001150   0x08001150   0x00000000   Code   RO         4659  * .ARM.Collect$$$$00000000  mc_w.l(entry.o)
+    0x08001150   0x08001150   0x00000004   Code   RO         4666    .ARM.Collect$$$$00000001  mc_w.l(entry2.o)
+    0x08001154   0x08001154   0x00000004   Code   RO         4669    .ARM.Collect$$$$00000004  mc_w.l(entry5.o)
+    0x08001158   0x08001158   0x00000000   Code   RO         4671    .ARM.Collect$$$$00000008  mc_w.l(entry7b.o)
+    0x08001158   0x08001158   0x00000000   Code   RO         4673    .ARM.Collect$$$$0000000A  mc_w.l(entry8b.o)
+    0x08001158   0x08001158   0x00000008   Code   RO         4674    .ARM.Collect$$$$0000000B  mc_w.l(entry9a.o)
+    0x08001160   0x08001160   0x00000004   Code   RO         4681    .ARM.Collect$$$$0000000E  mc_w.l(entry12b.o)
+    0x08001164   0x08001164   0x00000000   Code   RO         4676    .ARM.Collect$$$$0000000F  mc_w.l(entry10a.o)
+    0x08001164   0x08001164   0x00000000   Code   RO         4678    .ARM.Collect$$$$00000011  mc_w.l(entry11a.o)
+    0x08001164   0x08001164   0x00000004   Code   RO         4667    .ARM.Collect$$$$00002712  mc_w.l(entry2.o)
+    0x08001168   0x08001168   0x00000024   Code   RO         4477    .text               startup_gd32c10x.o
+    0x0800118c   0x0800118c   0x00000754   Code   RO         4542    .text               M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
+    0x080018e0   0x080018e0   0x00000024   Code   RO         4662    .text               mc_w.l(memcpya.o)
+    0x08001904   0x08001904   0x00000024   Code   RO         4682    .text               mc_w.l(init.o)
+    0x08001928   0x08001928   0x00000056   Code   RO         4692    .text               mc_w.l(__dczerorl2.o)
     0x0800197e   0x0800197e   0x00000002   PAD
-    0x08001980   0x08001980   0x00000314   Code   RO         4570    .text.1             M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
-    0x08001c94   0x08001c94   0x00000112   Code   RO         4527    .text.12            M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
-    0x08001da6   0x08001da6   0x0000016c   Code   RO         4574    .text.13            M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
+    0x08001980   0x08001980   0x00000314   Code   RO         4589    .text.1             M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
+    0x08001c94   0x08001c94   0x00000112   Code   RO         4546    .text.12            M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
+    0x08001da6   0x08001da6   0x0000016c   Code   RO         4593    .text.13            M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
     0x08001f12   0x08001f12   0x00000002   PAD
-    0x08001f14   0x08001f14   0x000000d0   Code   RO         4531    .text.15            M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
-    0x08001fe4   0x08001fe4   0x00000290   Code   RO         4538    .text.4             M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
-    0x08002274   0x08002274   0x000000fc   Code   RO         4528    .text.5             M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
-    0x08002370   0x08002370   0x000000fc   Code   RO         4526    .text.9             M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
-    0x0800246c   0x0800246c   0x000000f8   Code   RO         4636    .text.M8266HostIf_SPI_Select  M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
-    0x08002564   0x08002564   0x00000194   Code   RO         4560    .text.M8266WIFI_SPI_Config_AP  M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
-    0x080026f8   0x080026f8   0x00000018   Code   RO         4591    .text.M8266WIFI_SPI_Config_Tcp_Window_num  M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
-    0x08002710   0x08002710   0x00000016   Code   RO         4575    .text.M8266WIFI_SPI_Delete_Connection  M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
-    0x08002726   0x08002726   0x0000009e   Code   RO         4635    .text.M8266WIFI_SPI_Get_Module_Info  M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
-    0x080027c4   0x080027c4   0x00000050   Code   RO         4541    .text.M8266WIFI_SPI_Get_Opmode  M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
-    0x08002814   0x08002814   0x00000012   Code   RO         4537    .text.M8266WIFI_SPI_Has_DataReceived  M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
-    0x08002826   0x08002826   0x000000d2   Code   RO         4573    .text.M8266WIFI_SPI_Query_Connection  M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
-    0x080028f8   0x080028f8   0x00000014   Code   RO         4539    .text.M8266WIFI_SPI_RecvData  M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
-    0x0800290c   0x0800290c   0x0000029c   Code   RO         4569    .text.M8266WIFI_SPI_STA_Get_HostIP_by_HostName  M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
-    0x08002ba8   0x08002ba8   0x0000007e   Code   RO         4542    .text.M8266WIFI_SPI_Set_Opmode  M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
-    0x08002c26   0x08002c26   0x00000086   Code   RO         4580    .text.M8266WIFI_SPI_Set_TcpServer_Auto_Discon_Timeout  M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
-    0x08002cac   0x08002cac   0x00000228   Code   RO         4578    .text.M8266WIFI_SPI_Setup_Connection  M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
+    0x08001f14   0x08001f14   0x000000d0   Code   RO         4550    .text.15            M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
+    0x08001fe4   0x08001fe4   0x00000290   Code   RO         4557    .text.4             M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
+    0x08002274   0x08002274   0x000000fc   Code   RO         4547    .text.5             M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
+    0x08002370   0x08002370   0x000000fc   Code   RO         4545    .text.9             M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
+    0x0800246c   0x0800246c   0x000000f8   Code   RO         4655    .text.M8266HostIf_SPI_Select  M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
+    0x08002564   0x08002564   0x00000194   Code   RO         4579    .text.M8266WIFI_SPI_Config_AP  M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
+    0x080026f8   0x080026f8   0x00000018   Code   RO         4610    .text.M8266WIFI_SPI_Config_Tcp_Window_num  M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
+    0x08002710   0x08002710   0x00000016   Code   RO         4594    .text.M8266WIFI_SPI_Delete_Connection  M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
+    0x08002726   0x08002726   0x0000009e   Code   RO         4654    .text.M8266WIFI_SPI_Get_Module_Info  M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
+    0x080027c4   0x080027c4   0x00000050   Code   RO         4560    .text.M8266WIFI_SPI_Get_Opmode  M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
+    0x08002814   0x08002814   0x00000012   Code   RO         4556    .text.M8266WIFI_SPI_Has_DataReceived  M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
+    0x08002826   0x08002826   0x000000d2   Code   RO         4592    .text.M8266WIFI_SPI_Query_Connection  M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
+    0x080028f8   0x080028f8   0x00000014   Code   RO         4558    .text.M8266WIFI_SPI_RecvData  M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
+    0x0800290c   0x0800290c   0x0000029c   Code   RO         4588    .text.M8266WIFI_SPI_STA_Get_HostIP_by_HostName  M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
+    0x08002ba8   0x08002ba8   0x0000007e   Code   RO         4561    .text.M8266WIFI_SPI_Set_Opmode  M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
+    0x08002c26   0x08002c26   0x00000086   Code   RO         4599    .text.M8266WIFI_SPI_Set_TcpServer_Auto_Discon_Timeout  M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
+    0x08002cac   0x08002cac   0x00000228   Code   RO         4597    .text.M8266WIFI_SPI_Setup_Connection  M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
     0x08002ed4   0x08002ed4   0x00000004   Code   RO          237    i.BusFault_Handler  gd32c10x_it.o
     0x08002ed8   0x08002ed8   0x00000018   Code   RO          238    i.CAN0_RX0_IRQHandler  gd32c10x_it.o
     0x08002ef0   0x08002ef0   0x00000018   Code   RO          239    i.CAN1_RX0_IRQHandler  gd32c10x_it.o
@@ -2014,176 +2019,176 @@ Memory Map of the image
     0x08002f0a   0x08002f0a   0x00000002   PAD
     0x08002f0c   0x08002f0c   0x000000a0   Code   RO          241    i.EXTI4_IRQHandler  gd32c10x_it.o
     0x08002fac   0x08002fac   0x00000004   Code   RO          242    i.HardFault_Handler  gd32c10x_it.o
-    0x08002fb0   0x08002fb0   0x0000001a   Code   RO          345    i.IntToHex          wifi.o
+    0x08002fb0   0x08002fb0   0x0000001a   Code   RO          352    i.IntToHex          wifi.o
     0x08002fca   0x08002fca   0x00000002   PAD
-    0x08002fcc   0x08002fcc   0x00000040   Code   RO          530    i.M8266HostIf_SPI_ReadWriteByte  m8266wifidrv.o
-    0x0800300c   0x0800300c   0x00000024   Code   RO          531    i.M8266HostIf_Set_SPI_nCS_Pin  m8266wifidrv.o
-    0x08003030   0x08003030   0x0000000c   Code   RO          533    i.M8266HostIf_delay_us  m8266wifidrv.o
+    0x08002fcc   0x08002fcc   0x00000040   Code   RO          537    i.M8266HostIf_SPI_ReadWriteByte  m8266wifidrv.o
+    0x0800300c   0x0800300c   0x00000024   Code   RO          538    i.M8266HostIf_Set_SPI_nCS_Pin  m8266wifidrv.o
+    0x08003030   0x08003030   0x0000000c   Code   RO          540    i.M8266HostIf_delay_us  m8266wifidrv.o
     0x0800303c   0x0800303c   0x00000004   Code   RO          243    i.MemManage_Handler  gd32c10x_it.o
     0x08003040   0x08003040   0x00000002   Code   RO          244    i.NMI_Handler       gd32c10x_it.o
     0x08003042   0x08003042   0x00000002   PAD
-    0x08003044   0x08003044   0x00000028   Code   RO          438    i.NVIC_SetPriority  delay.o
+    0x08003044   0x08003044   0x00000028   Code   RO          445    i.NVIC_SetPriority  delay.o
     0x0800306c   0x0800306c   0x00000002   Code   RO          245    i.PendSV_Handler    gd32c10x_it.o
     0x0800306e   0x0800306e   0x00000002   Code   RO          246    i.SVC_Handler       gd32c10x_it.o
     0x08003070   0x08003070   0x0000001c   Code   RO          247    i.SysTick_Handler   gd32c10x_it.o
-    0x0800308c   0x0800308c   0x00000058   Code   RO          727    i.SystemInit        system_gd32c10x.o
-    0x080030e4   0x080030e4   0x000000e0   Code   RO          680    i.TIMER2_IRQHandler  buzzer.o
+    0x0800308c   0x0800308c   0x00000058   Code   RO          746    i.SystemInit        system_gd32c10x.o
+    0x080030e4   0x080030e4   0x000000e0   Code   RO          699    i.TIMER2_IRQHandler  buzzer.o
     0x080031c4   0x080031c4   0x00000014   Code   RO          248    i.TIMER3_IRQHandler  gd32c10x_it.o
     0x080031d8   0x080031d8   0x00000014   Code   RO          249    i.TIMER4_IRQHandler  gd32c10x_it.o
     0x080031ec   0x080031ec   0x00000004   Code   RO          250    i.UsageFault_Handler  gd32c10x_it.o
-    0x080031f0   0x080031f0   0x0000000e   Code   RO         4667    i.__scatterload_copy  mc_w.l(handlers.o)
-    0x080031fe   0x080031fe   0x00000002   Code   RO         4668    i.__scatterload_null  mc_w.l(handlers.o)
-    0x08003200   0x08003200   0x0000000e   Code   RO         4669    i.__scatterload_zeroinit  mc_w.l(handlers.o)
+    0x080031f0   0x080031f0   0x0000000e   Code   RO         4686    i.__scatterload_copy  mc_w.l(handlers.o)
+    0x080031fe   0x080031fe   0x00000002   Code   RO         4687    i.__scatterload_null  mc_w.l(handlers.o)
+    0x08003200   0x08003200   0x0000000e   Code   RO         4688    i.__scatterload_zeroinit  mc_w.l(handlers.o)
     0x0800320e   0x0800320e   0x00000002   PAD
-    0x08003210   0x08003210   0x000000bc   Code   RO          681    i.beep              buzzer.o
-    0x080032cc   0x080032cc   0x00000044   Code   RO          682    i.beep_setvolume    buzzer.o
+    0x08003210   0x08003210   0x000000bc   Code   RO          700    i.beep              buzzer.o
+    0x080032cc   0x080032cc   0x00000044   Code   RO          701    i.beep_setvolume    buzzer.o
     0x08003310   0x08003310   0x00000040   Code   RO            3    i.bsp_board_config  main.o
     0x08003350   0x08003350   0x000000d4   Code   RO            4    i.buzz_config       main.o
-    0x08003424   0x08003424   0x00000010   Code   RO          683    i.buzzer_wait_until_idle  buzzer.o
-    0x08003434   0x08003434   0x00000038   Code   RO         1229    i.can1_filter_start_bank  gd32c10x_can.o
+    0x08003424   0x08003424   0x00000010   Code   RO          702    i.buzzer_wait_until_idle  buzzer.o
+    0x08003434   0x08003434   0x00000038   Code   RO         1248    i.can1_filter_start_bank  gd32c10x_can.o
     0x0800346c   0x0800346c   0x00000094   Code   RO            5    i.can_clear_filter  main.o
-    0x08003500   0x08003500   0x0000003c   Code   RO          571    i.can_cmd_recv      messages.o
-    0x0800353c   0x0800353c   0x000000d0   Code   RO          572    i.can_cmd_recv_iterate  messages.o
-    0x0800360c   0x0800360c   0x00000084   Code   RO          573    i.can_cmd_send2can  messages.o
-    0x08003690   0x08003690   0x0000014c   Code   RO            6    i.can_config        main.o
-    0x080037dc   0x080037dc   0x00000034   Code   RO         1232    i.can_deinit        gd32c10x_can.o
-    0x08003810   0x08003810   0x00000032   Code   RO         1234    i.can_fd_frequency_set  gd32c10x_can.o
-    0x08003842   0x08003842   0x000000f4   Code   RO         1237    i.can_fd_init       gd32c10x_can.o
-    0x08003936   0x08003936   0x00000002   PAD
-    0x08003938   0x08003938   0x00000110   Code   RO         1239    i.can_filter_init   gd32c10x_can.o
-    0x08003a48   0x08003a48   0x00000074   Code   RO         1243    i.can_frequency_set  gd32c10x_can.o
-    0x08003abc   0x08003abc   0x00000090   Code   RO            7    i.can_gpio_config   main.o
-    0x08003b4c   0x08003b4c   0x000001a4   Code   RO         1244    i.can_init          gd32c10x_can.o
-    0x08003cf0   0x08003cf0   0x00000008   Code   RO         1246    i.can_interrupt_enable  gd32c10x_can.o
-    0x08003cf8   0x08003cf8   0x000001c4   Code   RO         1249    i.can_message_receive  gd32c10x_can.o
-    0x08003ebc   0x08003ebc   0x00000274   Code   RO         1250    i.can_message_transmit  gd32c10x_can.o
-    0x08004130   0x08004130   0x00000024   Code   RO          574    i.can_msg_buffer_clear  messages.o
-    0x08004154   0x08004154   0x000000b4   Code   RO          575    i.can_msg_recv      messages.o
-    0x08004208   0x08004208   0x0000008c   Code   RO          576    i.can_msg_send2wifi  messages.o
-    0x08004294   0x08004294   0x00000080   Code   RO            8    i.can_set_id_filter_extended  main.o
-    0x08004314   0x08004314   0x00000090   Code   RO            9    i.can_set_id_filter_standard  main.o
-    0x080043a4   0x080043a4   0x000000e2   Code   RO         1254    i.can_struct_para_init  gd32c10x_can.o
-    0x08004486   0x08004486   0x00000050   Code   RO         1257    i.can_transmission_stop  gd32c10x_can.o
-    0x080044d6   0x080044d6   0x000000a8   Code   RO         1261    i.can_working_mode_set  gd32c10x_can.o
-    0x0800457e   0x0800457e   0x00000002   PAD
-    0x08004580   0x08004580   0x0000000c   Code   RO          439    i.clear_heartbeat_pending  delay.o
-    0x0800458c   0x0800458c   0x0000000c   Code   RO          440    i.clear_heartbeat_timeout  delay.o
-    0x08004598   0x08004598   0x00000020   Code   RO           10    i.clear_mailbox     main.o
-    0x080045b8   0x080045b8   0x00000018   Code   RO          441    i.current_time01ms  delay.o
-    0x080045d0   0x080045d0   0x000000d0   Code   RO          442    i.delay_ms          delay.o
-    0x080046a0   0x080046a0   0x0000005c   Code   RO          443    i.delay_us          delay.o
-    0x080046fc   0x080046fc   0x00000094   Code   RO         1262    i.dev_can_baudrate_set  gd32c10x_can.o
-    0x08004790   0x08004790   0x000000ec   Code   RO         1263    i.dev_can_fd_baudrate_set  gd32c10x_can.o
-    0x0800487c   0x0800487c   0x00000214   Code   RO          625    i.device_firmware_upgrade  vci.o
-    0x08004a90   0x08004a90   0x00000028   Code   RO           11    i.err_led           main.o
-    0x08004ab8   0x08004ab8   0x000000b8   Code   RO         2127    i.exti_init         gd32c10x_exti.o
-    0x08004b70   0x08004b70   0x0000000c   Code   RO         2130    i.exti_interrupt_flag_clear  gd32c10x_exti.o
-    0x08004b7c   0x08004b7c   0x0000000c   Code   RO         2215    i.fmc_flag_clear    gd32c10x_fmc.o
-    0x08004b88   0x08004b88   0x00000014   Code   RO         2224    i.fmc_lock          gd32c10x_fmc.o
-    0x08004b9c   0x08004b9c   0x00000048   Code   RO         2226    i.fmc_page_erase    gd32c10x_fmc.o
-    0x08004be4   0x08004be4   0x00000022   Code   RO         2230    i.fmc_ready_wait    gd32c10x_fmc.o
-    0x08004c06   0x08004c06   0x00000002   PAD
-    0x08004c08   0x08004c08   0x00000040   Code   RO         2231    i.fmc_state_get     gd32c10x_fmc.o
-    0x08004c48   0x08004c48   0x00000024   Code   RO         2232    i.fmc_unlock        gd32c10x_fmc.o
-    0x08004c6c   0x08004c6c   0x00000040   Code   RO         2233    i.fmc_word_program  gd32c10x_fmc.o
-    0x08004cac   0x08004cac   0x0000000c   Code   RO           12    i.get_vci_status    main.o
-    0x08004cb8   0x08004cb8   0x00000004   Code   RO         2487    i.gpio_bit_reset    gd32c10x_gpio.o
-    0x08004cbc   0x08004cbc   0x00000004   Code   RO         2488    i.gpio_bit_set      gd32c10x_gpio.o
-    0x08004cc0   0x08004cc0   0x0000000a   Code   RO         2489    i.gpio_bit_write    gd32c10x_gpio.o
-    0x08004cca   0x08004cca   0x00000002   PAD
-    0x08004ccc   0x08004ccc   0x00000098   Code   RO         2496    i.gpio_exti_source_select  gd32c10x_gpio.o
-    0x08004d64   0x08004d64   0x000000bc   Code   RO         2497    i.gpio_init         gd32c10x_gpio.o
-    0x08004e20   0x08004e20   0x00000010   Code   RO         2498    i.gpio_input_bit_get  gd32c10x_gpio.o
-    0x08004e30   0x08004e30   0x00000090   Code   RO         2503    i.gpio_pin_remap_config  gd32c10x_gpio.o
-    0x08004ec0   0x08004ec0   0x0000001c   Code   RO          444    i.heartbeat_pending  delay.o
-    0x08004edc   0x08004edc   0x0000001c   Code   RO          445    i.heartbeat_timeout  delay.o
-    0x08004ef8   0x08004ef8   0x00000068   Code   RO          446    i.led_flash_config  delay.o
-    0x08004f60   0x08004f60   0x00000290   Code   RO           13    i.main              main.o
-    0x080051f0   0x080051f0   0x00000018   Code   RO         2844    i.nvic_irq_disable  gd32c10x_misc.o
-    0x08005208   0x08005208   0x000000ac   Code   RO         2845    i.nvic_irq_enable   gd32c10x_misc.o
-    0x080052b4   0x080052b4   0x00000014   Code   RO         2846    i.nvic_priority_group_set  gd32c10x_misc.o
-    0x080052c8   0x080052c8   0x00000014   Code   RO         2847    i.nvic_vector_table_set  gd32c10x_misc.o
-    0x080052dc   0x080052dc   0x00000078   Code   RO           14    i.params_init       main.o
-    0x08005354   0x08005354   0x00000020   Code   RO         3022    i.rcu_periph_clock_enable  gd32c10x_rcu.o
-    0x08005374   0x08005374   0x00000020   Code   RO         3025    i.rcu_periph_reset_disable  gd32c10x_rcu.o
-    0x08005394   0x08005394   0x00000020   Code   RO         3026    i.rcu_periph_reset_enable  gd32c10x_rcu.o
-    0x080053b4   0x080053b4   0x00000044   Code   RO          626    i.recv              vci.o
-    0x080053f8   0x080053f8   0x000000a8   Code   RO           15    i.set_can_channel   main.o
-    0x080054a0   0x080054a0   0x00000028   Code   RO          627    i.set_channel       vci.o
-    0x080054c8   0x080054c8   0x00000070   Code   RO          628    i.set_filter        vci.o
-    0x08005538   0x08005538   0x0000000c   Code   RO           16    i.set_vci_status    main.o
-    0x08005544   0x08005544   0x00000078   Code   RO          629    i.setting           vci.o
-    0x080055bc   0x080055bc   0x0000000a   Code   RO         3399    i.spi_enable        gd32c10x_spi.o
-    0x080055c6   0x080055c6   0x00000008   Code   RO         3401    i.spi_i2s_data_receive  gd32c10x_spi.o
-    0x080055ce   0x080055ce   0x00000004   Code   RO         3402    i.spi_i2s_data_transmit  gd32c10x_spi.o
-    0x080055d2   0x080055d2   0x00000002   PAD
-    0x080055d4   0x080055d4   0x00000058   Code   RO         3403    i.spi_i2s_deinit    gd32c10x_spi.o
-    0x0800562c   0x0800562c   0x00000010   Code   RO         3404    i.spi_i2s_flag_get  gd32c10x_spi.o
-    0x0800563c   0x0800563c   0x00000032   Code   RO         3408    i.spi_init          gd32c10x_spi.o
-    0x0800566e   0x0800566e   0x00000002   PAD
-    0x08005670   0x08005670   0x000000fc   Code   RO          728    i.system_clock_120m_hxtal  system_gd32c10x.o
-    0x0800576c   0x0800576c   0x00000008   Code   RO          729    i.system_clock_config  system_gd32c10x.o
-    0x08005774   0x08005774   0x000000ac   Code   RO          447    i.tim3_it           delay.o
-    0x08005820   0x08005820   0x00000020   Code   RO          448    i.tim4_it           delay.o
-    0x08005840   0x08005840   0x0000000a   Code   RO         3635    i.timer_auto_reload_shadow_disable  gd32c10x_timer.o
-    0x0800584a   0x0800584a   0x00000002   PAD
-    0x0800584c   0x0800584c   0x000001ec   Code   RO         3653    i.timer_channel_output_config  gd32c10x_timer.o
-    0x08005a38   0x08005a38   0x0000005a   Code   RO         3655    i.timer_channel_output_mode_config  gd32c10x_timer.o
-    0x08005a92   0x08005a92   0x00000026   Code   RO         3657    i.timer_channel_output_pulse_value_config  gd32c10x_timer.o
-    0x08005ab8   0x08005ab8   0x0000005a   Code   RO         3658    i.timer_channel_output_shadow_config  gd32c10x_timer.o
-    0x08005b12   0x08005b12   0x00000010   Code   RO         3660    i.timer_channel_output_struct_para_init  gd32c10x_timer.o
-    0x08005b22   0x08005b22   0x00000002   PAD
-    0x08005b24   0x08005b24   0x00000184   Code   RO         3666    i.timer_deinit      gd32c10x_timer.o
-    0x08005ca8   0x08005ca8   0x0000000a   Code   RO         3667    i.timer_disable     gd32c10x_timer.o
-    0x08005cb2   0x08005cb2   0x0000000a   Code   RO         3671    i.timer_enable      gd32c10x_timer.o
-    0x08005cbc   0x08005cbc   0x000000a4   Code   RO         3681    i.timer_init        gd32c10x_timer.o
-    0x08005d60   0x08005d60   0x00000008   Code   RO         3688    i.timer_interrupt_enable  gd32c10x_timer.o
-    0x08005d68   0x08005d68   0x00000006   Code   RO         3689    i.timer_interrupt_flag_clear  gd32c10x_timer.o
-    0x08005d6e   0x08005d6e   0x00000018   Code   RO         3696    i.timer_primary_output_config  gd32c10x_timer.o
-    0x08005d86   0x08005d86   0x00000016   Code   RO         3701    i.timer_struct_para_init  gd32c10x_timer.o
-    0x08005d9c   0x08005d9c   0x00000068   Code   RO          449    i.timing_config     delay.o
-    0x08005e04   0x08005e04   0x00000012   Code   RO           17    i.vci_can_init      main.o
-    0x08005e16   0x08005e16   0x00000002   PAD
-    0x08005e18   0x08005e18   0x00000024   Code   RO           18    i.vci_can_stop      main.o
-    0x08005e3c   0x08005e3c   0x000000cc   Code   RO          630    i.vci_ctl_recv      vci.o
-    0x08005f08   0x08005f08   0x0000003c   Code   RO          346    i.wifi_GetClients   wifi.o
-    0x08005f44   0x08005f44   0x00000160   Code   RO          348    i.wifi_Init         wifi.o
-    0x080060a4   0x080060a4   0x0000004c   Code   RO          349    i.wifi_Module_Hardware_Reset  wifi.o
-    0x080060f0   0x080060f0   0x00000064   Code   RO          350    i.wifi_SendData     wifi.o
-    0x08006154   0x08006154   0x00000050   Code   RO          351    i.wifi_SetupTCPServer  wifi.o
-    0x080061a4   0x080061a4   0x0000000a   Code   RO          352    i.wifi_disableIT    wifi.o
-    0x080061ae   0x080061ae   0x0000000e   Code   RO          353    i.wifi_enableIT     wifi.o
-    0x080061bc   0x080061bc   0x00000044   Code   RO          354    i.wifi_init_it      wifi.o
-    0x08006200   0x08006200   0x0000001c   Code   RO          355    i.wifi_reset        wifi.o
-    0x0800621c   0x0800621c   0x0000009c   Code   RO          356    i.wifi_spi_init     wifi.o
-    0x080062b8   0x080062b8   0x00000007   Data   RO         1264    .constdata          gd32c10x_can.o
-    0x080062bf   0x080062bf   0x00000020   Data   RO         4638    .rodata             M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
-    0x080062df   0x080062df   0x00000060   Data   RO         4639    .rodata.str1.1      M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
-    0x0800633f   0x0800633f   0x00000001   PAD
-    0x08006340   0x08006340   0x00000020   Data   RO         4665    Region$$Table       anon$$obj.o
+    0x08003500   0x08003500   0x00000040   Code   RO          578    i.can_cmd_recv      messages.o
+    0x08003540   0x08003540   0x00000052   Code   RO          580    i.can_cmd_recv_send_iterate  messages.o
+    0x08003592   0x08003592   0x00000002   PAD
+    0x08003594   0x08003594   0x00000064   Code   RO          581    i.can_cmd_send2can  messages.o
+    0x080035f8   0x080035f8   0x0000002c   Code   RO          582    i.can_cmd_sendonce  messages.o
+    0x08003624   0x08003624   0x0000014c   Code   RO            6    i.can_config        main.o
+    0x08003770   0x08003770   0x00000034   Code   RO         1251    i.can_deinit        gd32c10x_can.o
+    0x080037a4   0x080037a4   0x00000032   Code   RO         1253    i.can_fd_frequency_set  gd32c10x_can.o
+    0x080037d6   0x080037d6   0x000000f4   Code   RO         1256    i.can_fd_init       gd32c10x_can.o
+    0x080038ca   0x080038ca   0x00000002   PAD
+    0x080038cc   0x080038cc   0x00000110   Code   RO         1258    i.can_filter_init   gd32c10x_can.o
+    0x080039dc   0x080039dc   0x00000074   Code   RO         1262    i.can_frequency_set  gd32c10x_can.o
+    0x08003a50   0x08003a50   0x00000090   Code   RO            7    i.can_gpio_config   main.o
+    0x08003ae0   0x08003ae0   0x000001a4   Code   RO         1263    i.can_init          gd32c10x_can.o
+    0x08003c84   0x08003c84   0x00000008   Code   RO         1265    i.can_interrupt_enable  gd32c10x_can.o
+    0x08003c8c   0x08003c8c   0x000001c4   Code   RO         1268    i.can_message_receive  gd32c10x_can.o
+    0x08003e50   0x08003e50   0x00000274   Code   RO         1269    i.can_message_transmit  gd32c10x_can.o
+    0x080040c4   0x080040c4   0x00000024   Code   RO          583    i.can_msg_buffer_clear  messages.o
+    0x080040e8   0x080040e8   0x000000b4   Code   RO          584    i.can_msg_recv      messages.o
+    0x0800419c   0x0800419c   0x0000008c   Code   RO          585    i.can_msg_send2wifi  messages.o
+    0x08004228   0x08004228   0x00000080   Code   RO            8    i.can_set_id_filter_extended  main.o
+    0x080042a8   0x080042a8   0x00000090   Code   RO            9    i.can_set_id_filter_standard  main.o
+    0x08004338   0x08004338   0x000000e2   Code   RO         1273    i.can_struct_para_init  gd32c10x_can.o
+    0x0800441a   0x0800441a   0x00000050   Code   RO         1276    i.can_transmission_stop  gd32c10x_can.o
+    0x0800446a   0x0800446a   0x000000a8   Code   RO         1280    i.can_working_mode_set  gd32c10x_can.o
+    0x08004512   0x08004512   0x00000002   PAD
+    0x08004514   0x08004514   0x0000000c   Code   RO          446    i.clear_heartbeat_pending  delay.o
+    0x08004520   0x08004520   0x0000000c   Code   RO          447    i.clear_heartbeat_timeout  delay.o
+    0x0800452c   0x0800452c   0x00000020   Code   RO           10    i.clear_mailbox     main.o
+    0x0800454c   0x0800454c   0x00000018   Code   RO          448    i.current_time01ms  delay.o
+    0x08004564   0x08004564   0x000000d0   Code   RO          449    i.delay_ms          delay.o
+    0x08004634   0x08004634   0x0000005c   Code   RO          450    i.delay_us          delay.o
+    0x08004690   0x08004690   0x00000094   Code   RO         1281    i.dev_can_baudrate_set  gd32c10x_can.o
+    0x08004724   0x08004724   0x000000ec   Code   RO         1282    i.dev_can_fd_baudrate_set  gd32c10x_can.o
+    0x08004810   0x08004810   0x00000214   Code   RO          644    i.device_firmware_upgrade  vci.o
+    0x08004a24   0x08004a24   0x00000028   Code   RO           11    i.err_led           main.o
+    0x08004a4c   0x08004a4c   0x000000b8   Code   RO         2146    i.exti_init         gd32c10x_exti.o
+    0x08004b04   0x08004b04   0x0000000c   Code   RO         2149    i.exti_interrupt_flag_clear  gd32c10x_exti.o
+    0x08004b10   0x08004b10   0x0000000c   Code   RO         2234    i.fmc_flag_clear    gd32c10x_fmc.o
+    0x08004b1c   0x08004b1c   0x00000014   Code   RO         2243    i.fmc_lock          gd32c10x_fmc.o
+    0x08004b30   0x08004b30   0x00000048   Code   RO         2245    i.fmc_page_erase    gd32c10x_fmc.o
+    0x08004b78   0x08004b78   0x00000022   Code   RO         2249    i.fmc_ready_wait    gd32c10x_fmc.o
+    0x08004b9a   0x08004b9a   0x00000002   PAD
+    0x08004b9c   0x08004b9c   0x00000040   Code   RO         2250    i.fmc_state_get     gd32c10x_fmc.o
+    0x08004bdc   0x08004bdc   0x00000024   Code   RO         2251    i.fmc_unlock        gd32c10x_fmc.o
+    0x08004c00   0x08004c00   0x00000040   Code   RO         2252    i.fmc_word_program  gd32c10x_fmc.o
+    0x08004c40   0x08004c40   0x0000000c   Code   RO           12    i.get_vci_status    main.o
+    0x08004c4c   0x08004c4c   0x00000004   Code   RO         2506    i.gpio_bit_reset    gd32c10x_gpio.o
+    0x08004c50   0x08004c50   0x00000004   Code   RO         2507    i.gpio_bit_set      gd32c10x_gpio.o
+    0x08004c54   0x08004c54   0x0000000a   Code   RO         2508    i.gpio_bit_write    gd32c10x_gpio.o
+    0x08004c5e   0x08004c5e   0x00000002   PAD
+    0x08004c60   0x08004c60   0x00000098   Code   RO         2515    i.gpio_exti_source_select  gd32c10x_gpio.o
+    0x08004cf8   0x08004cf8   0x000000bc   Code   RO         2516    i.gpio_init         gd32c10x_gpio.o
+    0x08004db4   0x08004db4   0x00000010   Code   RO         2517    i.gpio_input_bit_get  gd32c10x_gpio.o
+    0x08004dc4   0x08004dc4   0x00000090   Code   RO         2522    i.gpio_pin_remap_config  gd32c10x_gpio.o
+    0x08004e54   0x08004e54   0x0000001c   Code   RO          451    i.heartbeat_pending  delay.o
+    0x08004e70   0x08004e70   0x0000001c   Code   RO          452    i.heartbeat_timeout  delay.o
+    0x08004e8c   0x08004e8c   0x00000068   Code   RO          453    i.led_flash_config  delay.o
+    0x08004ef4   0x08004ef4   0x00000270   Code   RO           13    i.main              main.o
+    0x08005164   0x08005164   0x00000018   Code   RO         2863    i.nvic_irq_disable  gd32c10x_misc.o
+    0x0800517c   0x0800517c   0x000000ac   Code   RO         2864    i.nvic_irq_enable   gd32c10x_misc.o
+    0x08005228   0x08005228   0x00000014   Code   RO         2865    i.nvic_priority_group_set  gd32c10x_misc.o
+    0x0800523c   0x0800523c   0x00000014   Code   RO         2866    i.nvic_vector_table_set  gd32c10x_misc.o
+    0x08005250   0x08005250   0x00000078   Code   RO           14    i.params_init       main.o
+    0x080052c8   0x080052c8   0x00000020   Code   RO         3041    i.rcu_periph_clock_enable  gd32c10x_rcu.o
+    0x080052e8   0x080052e8   0x00000020   Code   RO         3044    i.rcu_periph_reset_disable  gd32c10x_rcu.o
+    0x08005308   0x08005308   0x00000020   Code   RO         3045    i.rcu_periph_reset_enable  gd32c10x_rcu.o
+    0x08005328   0x08005328   0x00000044   Code   RO          645    i.recv              vci.o
+    0x0800536c   0x0800536c   0x000000a8   Code   RO           15    i.set_can_channel   main.o
+    0x08005414   0x08005414   0x00000028   Code   RO          646    i.set_channel       vci.o
+    0x0800543c   0x0800543c   0x00000070   Code   RO          647    i.set_filter        vci.o
+    0x080054ac   0x080054ac   0x0000000c   Code   RO           16    i.set_vci_status    main.o
+    0x080054b8   0x080054b8   0x00000078   Code   RO          648    i.setting           vci.o
+    0x08005530   0x08005530   0x0000000a   Code   RO         3418    i.spi_enable        gd32c10x_spi.o
+    0x0800553a   0x0800553a   0x00000008   Code   RO         3420    i.spi_i2s_data_receive  gd32c10x_spi.o
+    0x08005542   0x08005542   0x00000004   Code   RO         3421    i.spi_i2s_data_transmit  gd32c10x_spi.o
+    0x08005546   0x08005546   0x00000002   PAD
+    0x08005548   0x08005548   0x00000058   Code   RO         3422    i.spi_i2s_deinit    gd32c10x_spi.o
+    0x080055a0   0x080055a0   0x00000010   Code   RO         3423    i.spi_i2s_flag_get  gd32c10x_spi.o
+    0x080055b0   0x080055b0   0x00000032   Code   RO         3427    i.spi_init          gd32c10x_spi.o
+    0x080055e2   0x080055e2   0x00000002   PAD
+    0x080055e4   0x080055e4   0x000000fc   Code   RO          747    i.system_clock_120m_hxtal  system_gd32c10x.o
+    0x080056e0   0x080056e0   0x00000008   Code   RO          748    i.system_clock_config  system_gd32c10x.o
+    0x080056e8   0x080056e8   0x000000b0   Code   RO          454    i.tim3_it           delay.o
+    0x08005798   0x08005798   0x00000020   Code   RO          455    i.tim4_it           delay.o
+    0x080057b8   0x080057b8   0x0000000a   Code   RO         3654    i.timer_auto_reload_shadow_disable  gd32c10x_timer.o
+    0x080057c2   0x080057c2   0x00000002   PAD
+    0x080057c4   0x080057c4   0x000001ec   Code   RO         3672    i.timer_channel_output_config  gd32c10x_timer.o
+    0x080059b0   0x080059b0   0x0000005a   Code   RO         3674    i.timer_channel_output_mode_config  gd32c10x_timer.o
+    0x08005a0a   0x08005a0a   0x00000026   Code   RO         3676    i.timer_channel_output_pulse_value_config  gd32c10x_timer.o
+    0x08005a30   0x08005a30   0x0000005a   Code   RO         3677    i.timer_channel_output_shadow_config  gd32c10x_timer.o
+    0x08005a8a   0x08005a8a   0x00000010   Code   RO         3679    i.timer_channel_output_struct_para_init  gd32c10x_timer.o
+    0x08005a9a   0x08005a9a   0x00000002   PAD
+    0x08005a9c   0x08005a9c   0x00000184   Code   RO         3685    i.timer_deinit      gd32c10x_timer.o
+    0x08005c20   0x08005c20   0x0000000a   Code   RO         3686    i.timer_disable     gd32c10x_timer.o
+    0x08005c2a   0x08005c2a   0x0000000a   Code   RO         3690    i.timer_enable      gd32c10x_timer.o
+    0x08005c34   0x08005c34   0x000000a4   Code   RO         3700    i.timer_init        gd32c10x_timer.o
+    0x08005cd8   0x08005cd8   0x00000008   Code   RO         3707    i.timer_interrupt_enable  gd32c10x_timer.o
+    0x08005ce0   0x08005ce0   0x00000006   Code   RO         3708    i.timer_interrupt_flag_clear  gd32c10x_timer.o
+    0x08005ce6   0x08005ce6   0x00000018   Code   RO         3715    i.timer_primary_output_config  gd32c10x_timer.o
+    0x08005cfe   0x08005cfe   0x00000016   Code   RO         3720    i.timer_struct_para_init  gd32c10x_timer.o
+    0x08005d14   0x08005d14   0x00000068   Code   RO          456    i.timing_config     delay.o
+    0x08005d7c   0x08005d7c   0x00000012   Code   RO           17    i.vci_can_init      main.o
+    0x08005d8e   0x08005d8e   0x00000002   PAD
+    0x08005d90   0x08005d90   0x00000024   Code   RO           18    i.vci_can_stop      main.o
+    0x08005db4   0x08005db4   0x000000cc   Code   RO          649    i.vci_ctl_recv      vci.o
+    0x08005e80   0x08005e80   0x0000003c   Code   RO          353    i.wifi_GetClients   wifi.o
+    0x08005ebc   0x08005ebc   0x0000015c   Code   RO          355    i.wifi_Init         wifi.o
+    0x08006018   0x08006018   0x0000004c   Code   RO          356    i.wifi_Module_Hardware_Reset  wifi.o
+    0x08006064   0x08006064   0x00000064   Code   RO          357    i.wifi_SendData     wifi.o
+    0x080060c8   0x080060c8   0x00000050   Code   RO          358    i.wifi_SetupTCPServer  wifi.o
+    0x08006118   0x08006118   0x0000000a   Code   RO          359    i.wifi_disableIT    wifi.o
+    0x08006122   0x08006122   0x0000000e   Code   RO          360    i.wifi_enableIT     wifi.o
+    0x08006130   0x08006130   0x00000044   Code   RO          361    i.wifi_init_it      wifi.o
+    0x08006174   0x08006174   0x0000009c   Code   RO          363    i.wifi_spi_init     wifi.o
+    0x08006210   0x08006210   0x00000007   Data   RO         1283    .constdata          gd32c10x_can.o
+    0x08006217   0x08006217   0x00000020   Data   RO         4657    .rodata             M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
+    0x08006237   0x08006237   0x00000060   Data   RO         4658    .rodata.str1.1      M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
+    0x08006297   0x08006297   0x00000001   PAD
+    0x08006298   0x08006298   0x00000020   Data   RO         4684    Region$$Table       anon$$obj.o
 
 
-    Execution Region RW_IRAM1 (Exec base: 0x20000000, Load base: 0x08006360, Size: 0x000039a8, Max: 0x00008000, ABSOLUTE, COMPRESSED[0x000000d4])
+    Execution Region RW_IRAM1 (Exec base: 0x20000000, Load base: 0x080062b8, Size: 0x000039a8, Max: 0x00008000, ABSOLUTE, COMPRESSED[0x000000d8])
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
     0x20000000   COMPRESSED   0x00000030   Data   RW           19    .data               main.o
     0x20000030   COMPRESSED   0x00000008   Data   RW          251    .data               gd32c10x_it.o
-    0x20000038   COMPRESSED   0x00000011   Data   RW          358    .data               wifi.o
+    0x20000038   COMPRESSED   0x00000011   Data   RW          365    .data               wifi.o
     0x20000049   COMPRESSED   0x00000003   PAD
-    0x2000004c   COMPRESSED   0x00000009   Data   RW          450    .data               delay.o
-    0x20000055   COMPRESSED   0x00000009   Data   RW          578    .data               messages.o
-    0x2000005e   COMPRESSED   0x000000dd   Data   RW          632    .data               vci.o
-    0x2000013b   COMPRESSED   0x00000001   PAD
-    0x2000013c   COMPRESSED   0x00000042   Data   RW          685    .data               buzzer.o
-    0x2000017e   COMPRESSED   0x00000016   Data   RW         4524    .data               M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
-    0x20000194        -       0x00002b00   Zero   RW          577    .bss                messages.o
-    0x20002c94        -       0x00000802   Zero   RW          631    .bss                vci.o
-    0x20003496        -       0x00000100   Zero   RW          684    .bss                buzzer.o
+    0x2000004c   COMPRESSED   0x00000009   Data   RW          457    .data               delay.o
+    0x20000055   COMPRESSED   0x0000000a   Data   RW          587    .data               messages.o
+    0x2000005f   COMPRESSED   0x000000dd   Data   RW          651    .data               vci.o
+    0x2000013c   COMPRESSED   0x00000042   Data   RW          704    .data               buzzer.o
+    0x2000017e   COMPRESSED   0x00000016   Data   RW         4543    .data               M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
+    0x20000194        -       0x00002b00   Zero   RW          586    .bss                messages.o
+    0x20002c94        -       0x00000802   Zero   RW          650    .bss                vci.o
+    0x20003496        -       0x00000100   Zero   RW          703    .bss                buzzer.o
     0x20003596   COMPRESSED   0x00000002   PAD
-    0x20003598        -       0x0000000a   Zero   RW         4525    .bss                M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
+    0x20003598        -       0x0000000a   Zero   RW         4544    .bss                M8266WIFIDrv_STM32F2xx.a(M8266WIFIDrv_STM32F2xx.o)
     0x200035a2   COMPRESSED   0x00000006   PAD
-    0x200035a8        -       0x00000400   Zero   RW         4455    STACK               startup_gd32c10x.o
+    0x200035a8        -       0x00000400   Zero   RW         4474    STACK               startup_gd32c10x.o
 
 
 ==============================================================================
@@ -2194,7 +2199,7 @@ Image component sizes
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Object Name
 
        496         76          0         66        256      27744   buzzer.o
-       856        120          0          9          0       7308   delay.o
+       860        118          0          9          0       7316   delay.o
       3156        148          7          0          0      31685   gd32c10x_can.o
        196         12          0          0          0       5452   gd32c10x_exti.o
        302         44          0          0          0       8685   gd32c10x_fmc.o
@@ -2205,17 +2210,17 @@ Image component sizes
        176          6          0          0          0      10471   gd32c10x_spi.o
       1368         52          0          0          0      25607   gd32c10x_timer.o
        112         12          0          0          0       1737   m8266wifidrv.o
-      2266        218          0         48          0      75886   main.o
-       756        104          0          9      11008       4802   messages.o
+      2234        228          0         48          0     102021   main.o
+       646         80          0         10      11008       5325   messages.o
         36          8        336          0       1024        896   startup_gd32c10x.o
        348         38          0          0          0       6101   system_gd32c10x.o
       1076        112          0        221       2050       5623   vci.o
-       970        116          0         17          0       7261   wifi.o
+       938        108          0         17          0       6796   wifi.o
 
     ----------------------------------------------------------------------
-     13288       1180        375        382      14340     265184   Object Totals
+     13120       1156        375        382      14340     291385   Object Totals
          0          0         32          0          0          0   (incl. Generated)
-        24          0          0          4          2          0   (incl. Padding)
+        26          0          0          3          2          0   (incl. Padding)
 
     ----------------------------------------------------------------------
 
@@ -2257,15 +2262,15 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-     20840       1348        504        404      14356     253004   Grand Totals
-     20840       1348        504        212      14356     253004   ELF Image Totals (compressed)
-     20840       1348        504        212          0          0   ROM Totals
+     20672       1324        504        404      14356     279205   Grand Totals
+     20672       1324        504        216      14356     279205   ELF Image Totals (compressed)
+     20672       1324        504        216          0          0   ROM Totals
 
 ==============================================================================
 
-    Total RO  Size (Code + RO Data)                21344 (  20.84kB)
+    Total RO  Size (Code + RO Data)                21176 (  20.68kB)
     Total RW  Size (RW Data + ZI Data)             14760 (  14.41kB)
-    Total ROM Size (Code + RO Data + RW Data)      21556 (  21.05kB)
+    Total ROM Size (Code + RO Data + RW Data)      21392 (  20.89kB)
 
 ==============================================================================
 

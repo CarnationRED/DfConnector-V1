@@ -1,3 +1,5 @@
+#ifndef __MSG_C__
+#define __MSG_C__
 #include "Messages.h"
 #include "M8266WIFIDrv.h"
 #include "main.h"
@@ -13,7 +15,7 @@ static u8 can_msg_recv_count;
 static u8 can_cmd_recv_start;
 static u8 can_cmd_recv_count;
 static u8 can_cmd_send_ack;
-
+void can_cmd_sendonce(CAN_SEND_CMD* cmd);
 volatile u8 can_traffic_indicator;
 
 //steps:
@@ -68,8 +70,29 @@ void can_msg_send2wifi(void)
 				can_msg_recv_start -= CAN_RECV_BUFFER;
 		can_msg_recv_count -= count;
 }
+u16 can_cmd_recv_send_iterate(u8 iterate0)
+{
+		u16 status,dlen;
+		CAN_SEND_CMD cmd;
+		dlen = M8266WIFI_SPI_RecvData((u8*)(&cmd) + (iterate0? 1:0), sizeof(CAN_SEND_CMD) - (iterate0?1:0), 2, NULL, &status);
+	
+	if(dlen + 8 >= sizeof(CAN_SEND_CMD))
+	{
+			if(iterate0)
+					dlen++;
+		
+			if(dlen != sizeof(CAN_SEND_CMD))
+			{
+				volatile u8 rr=1;
+			}else{
+				can_cmd_sendonce(&cmd);
+			}
+	}
+		return status;
+}
 
-u16 can_cmd_recv_iterate(void)
+volatile u8 offset=8;
+u16 can_cmd_recv_iterate(u8 iterate0)
 {
 		CAN_SEND_CMD *cmd;
 		u8 id, continous_space;
@@ -84,7 +107,7 @@ u16 can_cmd_recv_iterate(void)
 		continous_space = CAN_SEND_BUFFER - can_cmd_recv_count;
 		if(id >= CAN_SEND_BUFFER) id -= CAN_SEND_BUFFER;
 		else continous_space -= can_cmd_recv_start;
-		
+				
 		if(continous_space < 1)
 		{
 				messaging_status = MSG_STATUS_ERR_SENDBUFFER_FULL;
@@ -92,14 +115,16 @@ u16 can_cmd_recv_iterate(void)
 		}
 		
 		cmd = &(can_send_queue[id]);
-		dlen = M8266WIFI_SPI_RecvData((u8*)cmd, continous_space * sizeof(CAN_SEND_CMD), 1, NULL, &status);
-		id = dlen / sizeof(CAN_SEND_CMD);
+		dlen = M8266WIFI_SPI_RecvData(((u8*)cmd) + (iterate0? 1:0) + offset - 8, continous_space * sizeof(CAN_SEND_CMD), 1, NULL, &status);
+		if(iterate0 && dlen + 1 >= sizeof(CAN_SEND_CMD))
+			dlen++;
+		id = (dlen+8) / sizeof(CAN_SEND_CMD);
 		if(dlen != (u16)id * sizeof(CAN_SEND_CMD))
 		{
-			volatile u8 s=sizeof(CAN_SEND_CMD);
-				messaging_status = MSG_STATUS_ERR_SEND_DATA_ERROR;
+				offset = dlen + 8 - (u16)id * sizeof(CAN_SEND_CMD);
+				//messaging_status = MSG_STATUS_ERR_SEND_DATA_ERROR;
 		}
-		else
+		else offset = 8;
 				can_cmd_send_ack = cmd->cmd_type == 1;
 		can_cmd_recv_count += id;
 		return status;
@@ -111,11 +136,12 @@ u16 can_cmd_recv_iterate(void)
 void can_cmd_recv(void)
 {
 		u16 status;
-		u8 ret;
+		u8 ret, iterate0 = 1;
 		can_cmd_send_ack = 0;
 		while(1)
 		{
-				status = can_cmd_recv_iterate() & 0x00ff;
+				status = can_cmd_recv_send_iterate(iterate0) & 0x00ff;
+				iterate0 = 0;
 				if(status == 0x24 || status == 0x23)
 						continue;
 				break;
@@ -126,18 +152,22 @@ void can_cmd_recv(void)
 				wifi_SendData(&ret, 1, WIFI_CAN_CTL_CHNL);
 		}
 }
-
+void can_cmd_sendonce(CAN_SEND_CMD* cmd)
+{
+				can_message_transmit(set_can_channel(cmd->channel), &(cmd->msg));
+				if(can_traffic_indicator < 250)
+					can_traffic_indicator += 5;
+}
 void can_cmd_send2can(void)
 {
 		while(can_cmd_recv_count != 0)
 		{
 				CAN_SEND_CMD cmd = can_send_queue[can_cmd_recv_start];
-					can_message_transmit(set_can_channel(cmd.channel), (can_trasnmit_message_struct *)&cmd);
-				if(++can_cmd_recv_start >= CAN_SEND_BUFFER)
+				can_cmd_sendonce(&cmd);
+				can_cmd_recv_start++;
+				if(can_cmd_recv_start >= CAN_SEND_BUFFER)
 						can_cmd_recv_start -= CAN_SEND_BUFFER;
 				can_cmd_recv_count--;
-				if(can_traffic_indicator < 250)
-					can_traffic_indicator += 5;
 		}
 }
 
@@ -148,3 +178,5 @@ void can_msg_buffer_clear()
 	  can_cmd_recv_start=0;
 	  can_cmd_recv_count=0;
 }
+#endif
+

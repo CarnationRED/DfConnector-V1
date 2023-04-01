@@ -26,21 +26,23 @@ typedef struct//sizeof=88 byte, actual size = 85
 }CAN_RECV_MSG;
 
 
-typedef struct//sizeof=80 byte, actual size = 78
+typedef struct//sizeof=84 byte, actual size = 82
 {
-    u32 tx_sfid;                                      //4          /*!< standard format frame identifier */
-    u32 tx_efid;                                      //4          /*!< extended format frame identifier */
-    u8 	tx_ff;                                        //1          /*!< format of frame, standard or extended format */
-    u8 	tx_ft;                                        //1          /*!< type of frame, data or remote */
-    u8 	tx_dlen;                                      //1          /*!< data length */
-    u8 	tx_data[64];                                  //64         /*!< transmit data */
-    u8 	fd_flag;                                      //1          /*!< CAN FD frame flag */
-    u8 	fd_brs;                                       //1          /*!< bit rate of data switch */
-    u8 	fd_esi;                                       //1
-																											//   78 above, 6 bellow
+		u8/*VCI_CTL_TYPE*/ type;																//1
 		u8 cmd_type;//指令类型,0:回传acknowledge，1:无sck	//1
     u8 serial;//CAN报文发送的序列号										//1
-    u8 channel;//channel															//1 (3 padding)
+    u8 channel;//channel															//1
+		can_trasnmit_message_struct msg;
+//																											//   4 above, 78 bellow
+//    u32 tx_sfid;                                      //4          /*!< standard format frame identifier */
+//    u32 tx_efid;                                      //4          /*!< extended format frame identifier */
+//    u8 	tx_ff;                                        //1          /*!< format of frame, standard or extended format */
+//    u8 	tx_ft;                                        //1          /*!< type of frame, data or remote */
+//    u8 	tx_dlen;                                      //1          /*!< data length */
+//    u8 	tx_data[64];                                  //64         /*!< transmit data */
+//    u8 	fd_flag;                                      //1          /*!< CAN FD frame flag */
+//    u8 	fd_brs;                                       //1          /*!< bit rate of data switch */
+//    u8 	fd_esi;                                       //1
 }CAN_SEND_CMD;
 
 
