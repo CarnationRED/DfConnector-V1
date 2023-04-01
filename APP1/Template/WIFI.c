@@ -1,14 +1,17 @@
 #include "WIFI.h"
 #include "delay.h"
 #include "M8266WIFIDrv.h"
+#include "gd32c10x_it.h"
 
- WIFI_OPMODE wifi_opmode = WIFI_OPMODE_AP;
- volatile char wifi_ssid[]="Dfcr-00000000";
+extern u32 last_wifi_time;
+
+volatile WIFI_OPMODE wifi_opmode = WIFI_OPMODE_AP;
+volatile char wifi_ssid[]="Dfcr-00000000";
 
 u8 wifi_send_buffer[WIFI_SEND_BUFFER];
 u8 wifi_recv_buffer[1024];
 
-WIFI_STATUS wifi_status;
+volatile WIFI_STATUS wifi_status;
 
 void wifi_Module_Hardware_Reset(void);
 
@@ -162,9 +165,10 @@ void wifi_Init(void)
 					wifi_ssid[i]=IntToHex(cpuid2>>(28-(i-5)*4));
 				}
 			
-				if (M8266WIFI_SPI_Config_AP((u8*)wifi_ssid, (u8*)"11111111", 4, 6, 0, &status) == 0) {
-				if (M8266WIFI_SPI_Config_AP("Anylinkin", "1234567890", 4, 1, 0, &status) == 0)
-						wifi_status = WIFI_STATUS_ERR_CONFIGAP;
+				if (M8266WIFI_SPI_Config_AP((u8*)wifi_ssid, (u8*)"11111111", 4, 6, 0, &status) == 0) 
+				{
+						if (M8266WIFI_SPI_Config_AP("Anylinkin", "1234567890", 4, 1, 0, &status) == 0)
+								wifi_status = WIFI_STATUS_ERR_CONFIGAP;
 				}
 //				else if (M8266WIFI_SPI_OptSel_Local_Ap_Channel(NULL, 0, &status) == 0) {
 //						wifi_status = WIFI_STATUS_ERR_CONFIGAP;
@@ -207,6 +211,7 @@ void wifi_SetupTCPServer(u16 port,u8 link_no)
     else if (M8266WIFI_SPI_Setup_Connection(WIFI_WRKMODE_TCPServer, port, "1.1.1.1", 0, link_no, 13, &status) == 0) {
         wifi_status= WIFI_STATUS_ERR_SETCPSVR;
     }
+		M8266WIFI_SPI_Set_TcpServer_Auto_Discon_Timeout(link_no, 5, NULL);
 }
 
 u8 wifi_GetClients(u8 link_no)
@@ -250,5 +255,7 @@ u16 wifi_SendData(uint8_t data[], uint16_t dataLen,u8 link_no)
 						break;
         } else
             break;
+				
+				last_wifi_time = current_time01ms();
 		return size;
 }

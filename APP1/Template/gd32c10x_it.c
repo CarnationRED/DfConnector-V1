@@ -44,6 +44,8 @@ extern can_receive_message_struct recvmsg;
 extern FlagStatus can0_receive_flag;
 extern FlagStatus can1_receive_flag;
 
+volatile u32 last_wifi_time=0;
+
 extern u8 current_channel;
 extern u8 can_setting_fd_flag[CAN_NUMBERS];
 extern u8 can_setting_auto_retrans[CAN_NUMBERS];
@@ -149,9 +151,12 @@ void PendSV_Handler(void)
     \param[out] none
     \retval     none
 */
+volatile bit_status systick_state;
+volatile u16 systick_cycles;
 void SysTick_Handler(void)
 {
-//    led_spark();
+		systick_state = SET;
+		systick_cycles++;
 //    delay_decrement();
 }
 
@@ -184,12 +189,13 @@ void EXTI4_IRQHandler(void)
 		u16 dlen, status;
 		u8 chnl;
 		exti_interrupt_flag_clear(EXTI_4);
-		if(M8266WIFI_SPI_Has_DataReceived())
+//		if(M8266WIFI_SPI_Has_DataReceived())
 		{
 				vci_ctl_type_header.type = 0xffffffff;
 				dlen = M8266WIFI_SPI_RecvData((u8*)&vci_ctl_type_header, sizeof(vci_ctl_type_header), 1, &chnl, &status);
 				if(dlen > 0)
 				{
+						last_wifi_time = current_time01ms();
 						if(chnl == WIFI_CAN_MSG_CHNL)
 						{
 								switch(vci_ctl_type_header.type)

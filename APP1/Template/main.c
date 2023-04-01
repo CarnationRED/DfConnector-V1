@@ -9,8 +9,8 @@
 #include "gd32c10x_gpio.h"
 
 #define CH444G_PORT				GPIOB
-#define CH444G_SW0				GPIO_PIN_4
-#define CH444G_SW1				GPIO_PIN_3
+#define CH444G_SW0				GPIO_PIN_7
+#define CH444G_SW1				GPIO_PIN_6
 
 #define SIGNAL1_RCU				RCU_GPIOC
 #define SIGNAL1_PORT			GPIOC
@@ -27,7 +27,7 @@ u8 can_setting_fd_iso_bosch[CAN_NUMBERS];
 u32 can_setting_buadrate[CAN_NUMBERS];
 u32 can_setting_buadrate_fd[CAN_NUMBERS];
 
-volatile u8 led2_lumin = 20;
+volatile bit_status led2_state = RESET;
 
 volatile static VCI_STATUS vci_status;
 
@@ -44,6 +44,7 @@ extern u8 can_msg_recv_start;
 extern u8 can_msg_recv_count;
 extern u8 can_cmd_recv_start;
 extern u8 can_cmd_recv_count;
+extern u32 last_wifi_time;
 
 void set_vci_status(VCI_STATUS s)
 {
@@ -92,12 +93,12 @@ void params_init(void)
 void can_gpio_config(void)
 {
 	    /* enable CAN clock */
+    rcu_periph_clock_enable(RCU_AF);
     rcu_periph_clock_enable(RCU_CAN0);
     rcu_periph_clock_enable(RCU_CAN1);
 //    rcu_periph_clock_enable(RCU_GPIOA);
     rcu_periph_clock_enable(RCU_GPIOB);
 		
-    rcu_periph_clock_enable(RCU_AF);
     
     /* configure CAN0 GPIO */
     gpio_init(GPIOB,GPIO_MODE_IPU,GPIO_OSPEED_50MHZ,GPIO_PIN_8);
@@ -112,10 +113,8 @@ void can_gpio_config(void)
     gpio_pin_remap_config(GPIO_CAN0_PARTIAL_REMAP /*GPIO_CAN0_FULL_REMAP*/, ENABLE);
     gpio_pin_remap_config(GPIO_CAN1_REMAP, DISABLE);
 		//CH444G
-    gpio_init(GPIOB, GPIO_MODE_OUT_PP, GPIO_OSPEED_50MHZ,GPIO_PIN_3);
-    gpio_init(GPIOB, GPIO_MODE_OUT_PP, GPIO_OSPEED_50MHZ,GPIO_PIN_4);
-		gpio_bit_set(CH444G_PORT, CH444G_SW0);
-		gpio_bit_set(CH444G_PORT, CH444G_SW1);
+    gpio_init(CH444G_PORT, GPIO_MODE_OUT_PP, GPIO_OSPEED_50MHZ,CH444G_SW0);
+    gpio_init(CH444G_PORT, GPIO_MODE_OUT_PP, GPIO_OSPEED_50MHZ,CH444G_SW1);
 }
 
 /*!
@@ -263,16 +262,16 @@ void can_config(void)
     fp.p_delay_compensation = &tdc;
     fp.iso_bosch = can_setting_fd_iso_bosch[0] == 0 ? CAN_FDMOD_ISO : CAN_FDMOD_BOSCH;//ISO mode
     fp.esi_mode = CAN_ESIMOD_HARDWARE;//error state indicator mode = displays the node error state by hardware
-    if(can_setting_fd_flag[0])
+    //if(can_setting_fd_flag[0])
 				can_fd_init(CAN0, &fp);
     fp.fd_frame = can_setting_fd_flag[1];
     fp.iso_bosch = can_setting_fd_iso_bosch[1] == 0 ? CAN_FDMOD_ISO : CAN_FDMOD_BOSCH;//ISO mode
-    if(can_setting_fd_flag[1])
+    //if(can_setting_fd_flag[1])
 				can_fd_init(CAN1, &fp);
     
-    if(can_setting_fd_flag[0])
+    //if(can_setting_fd_flag[0])
 				can_fd_frequency_set(CAN0, can_setting_buadrate_fd[0]);	//canfd 1M 2M 3M 4M 5M 6M
-    if(can_setting_fd_flag[1])
+    //if(can_setting_fd_flag[1])
 				can_fd_frequency_set(CAN1, can_setting_buadrate_fd[1]);	//canfd 1M 2M 3M 4M 5M 6M
     
     /* initialize filter */ 
@@ -288,6 +287,13 @@ void can_config(void)
     /* enable can receive FIFO0 not empty interrupt */
     can_interrupt_enable(CAN0, CAN_INTEN_RFNEIE0);
     can_interrupt_enable(CAN1, CAN_INTEN_RFNEIE0);
+}
+
+void clear_mailbox()
+{
+		can_transmission_stop(CAN1, CAN_MAILBOX0);
+		can_transmission_stop(CAN1, CAN_MAILBOX1);
+		can_transmission_stop(CAN1, CAN_MAILBOX2);
 }
 
 /*!
@@ -311,6 +317,7 @@ u32 set_can_channel(u8 channel)
 			case 1:
 				if(b)
 				{
+						clear_mailbox();
 						gpio_bit_reset(CH444G_PORT, CH444G_SW0);
 						gpio_bit_reset(CH444G_PORT, CH444G_SW1);
 				}
@@ -318,6 +325,7 @@ u32 set_can_channel(u8 channel)
 			case 2:
 				if(b)
 				{
+						clear_mailbox();
 						gpio_bit_set(CH444G_PORT, CH444G_SW0);
 						gpio_bit_reset(CH444G_PORT, CH444G_SW1);
 				}
@@ -325,6 +333,7 @@ u32 set_can_channel(u8 channel)
 			case 3:
 				if(b)
 				{
+						clear_mailbox();
 						gpio_bit_reset(CH444G_PORT, CH444G_SW0);
 						gpio_bit_set(CH444G_PORT, CH444G_SW1);
 				}
@@ -332,6 +341,7 @@ u32 set_can_channel(u8 channel)
 			case 4:
 				if(b)
 				{
+						clear_mailbox();
 						gpio_bit_set(CH444G_PORT, CH444G_SW0);
 						gpio_bit_set(CH444G_PORT, CH444G_SW1);
 				}
@@ -393,6 +403,7 @@ void buzz_config(void)
     timer_ocinitpara.ocidlestate  = TIMER_OC_IDLE_STATE_LOW;//idle: low
     timer_ocinitpara.ocnidlestate = TIMER_OCN_IDLE_STATE_LOW;
 
+    gpio_pin_remap_config(GPIO_TIMER0_PARTIAL_REMAP, ENABLE);
     timer_channel_output_config(_BUZZER_TIMER, _BUZZER_TIMER_CH, &timer_ocinitpara);
 
     /* CH0 configuration in PWM mode0, duty cycle 25% */
@@ -404,7 +415,6 @@ void buzz_config(void)
     timer_auto_reload_shadow_disable(_BUZZER_TIMER);
 		timer_enable(TIMER0);
 }
-
 
 /*!
     \brief      main function
@@ -428,19 +438,23 @@ int main(void)
 				nvic_priority_group_set(NVIC_PRIGROUP_PRE2_SUB2);
 			
 				/* start timer */
-				tim4_config();
-				tim3_config();
+				timing_config();
+				led_flash_config();
 				
 				buzz_config();
-			
-				beep_setvolume(85);
+				beep_setvolume(5);
 				if(rom1)
-					beep(beep_startup1, 1, 520);
+					beep(beep_startup1, 1, 400);
 				else 
-					beep(beep_startup2, 1, 520);
+					beep(beep_startup2, 1, 400);
 			
-				gpio_bit_set(GPIOC,GPIO_PIN_13);
-				gpio_bit_set(GPIOC,GPIO_PIN_14);
+				while(0)
+				{
+					u32 i=50000;
+					while(i-->0)
+					delay_us(10);
+					gpio_bit_write(GPIOC,GPIO_PIN_14,led2_state=SET-led2_state);
+				}
 				
 				vci_can_init();
 	
@@ -462,24 +476,38 @@ int main(void)
 				m.tx_data[5] = 0xff;
 				m.tx_data[6] = 0x00;
 				m.tx_data[7] = 0x11;
-				can_message_transmit(CAN0, &m);
-			
-			
-				can1_filter_start_bank(14);
-				can_set_id_filter_standard(0,  0, 0,0, 0, CAN0, ENABLE);
-				can_set_id_filter_standard(1,  0, 0,0, 0, CAN0, ENABLE);
-				can_set_id_filter_standard(0, 0, 0,0, 0, CAN1, ENABLE);
-				can_set_id_filter_standard(15, 0, 0,0, 0, CAN1, ENABLE);
-//			while(1){
-//					if(get_vci_status()==VCI_STATUS_DFU)
-//					{
+//				while(1){
+//						gpio_bit_write(GPIOC, GPIO_PIN_14, led2_state = SET - led2_state);
+//							delay_ms(500);
+//					continue;
+//						set_can_channel(1);
+//						m.tx_data[0]=0x11;
+//						can_message_transmit(CAN1, &m);
+//						delay_ms(200);
+//					
+//						set_can_channel(2);
+//						m.tx_data[0]=0x22;
+//						can_message_transmit(CAN1, &m);
+//						delay_ms(200);
+//					
+//						set_can_channel(3);
+//						m.tx_data[0]=0x33;
+//						can_message_transmit(CAN1, &m);
+//						delay_ms(200);
+//					
+//						set_can_channel(4);
+//						m.tx_data[0]=0x44;
+//						can_message_transmit(CAN1, &m);
+//						delay_ms(200);
+//					
+//						m.tx_data[0]=0x0;
 //						can_message_transmit(CAN0, &m);
-//						set_vci_status(VCI_STATUS_RUN);
+//						delay_ms(200);
 //					}
-//			}
+				
 				/* start wifi, time consuming */
 				wifi_Init();
-				delay_ms(100);
+				delay_ms(20);
 				/* start server port 1112 for can message uploading and can command downloading */
 				wifi_SetupTCPServer(WIFI_CAN_MSG_PORT,WIFI_CAN_MSG_CHNL);
 				/* start server port 1113 for can device control, reinit, filter setting, and so on */
@@ -487,23 +515,29 @@ int main(void)
 				/* start server port 1114 for vci device control, including status report, time sync */
 				wifi_SetupTCPServer(WIFI_VCI_CTL_PORT,WIFI_VCI_CTL_CHNL);
 				
+				/*beep if wifi start ok*/
 				if(wifi_status == WIFI_STATUS_INIT_COMPLET)
 				{
+						buzzer_wait_until_idle();
 						if(rom1)
-							beep(beep_startup1, sizeof(beep_startup1), 520);
+							beep(beep_startup1, sizeof(beep_startup1), 600);
 						else 
-							beep(beep_startup2, sizeof(beep_startup2), 520);
+							beep(beep_startup2, sizeof(beep_startup2), 600);
 				}
-				
 				set_vci_status(VCI_STATUS_RUN);
 				
 				while(get_vci_status() == VCI_STATUS_RUN)
 				{
 						u8 counter = 0;
+						u8 updown_err_cnt = 0;
+						u32 up;
 						wifi_status = WIFI_STATUS_WAIT_FOR_CNT;
-						while(wifi_GetClients(WIFI_CAN_CTL_CHNL) <= 0 && wifi_GetClients(WIFI_VCI_CTL_CHNL) <= 0 && get_vci_status() == VCI_STATUS_RUN) delay_ms(100);
+						/*wait until connection established*/
+						while(wifi_GetClients(WIFI_CAN_CTL_CHNL) <= 0 && wifi_GetClients(WIFI_VCI_CTL_CHNL) <= 0 && wifi_GetClients(WIFI_CAN_MSG_CHNL) <= 0 && get_vci_status() == VCI_STATUS_RUN) delay_ms(100);
 						
+						up= current_time01ms()/10;
 						buzzer_wait_until_idle();
+						/*beep: device connected*/
 						beep(beep_connected, sizeof(beep_connected), 600);
 					
 						messaging_status = MSG_STATUS_NORMAL;
@@ -512,12 +546,22 @@ int main(void)
 						while(get_vci_status() == VCI_STATUS_RUN)
 						{
 								if(counter++ == 0xfe) {
-									EXTI4_IRQHandler();
-									if(heartbeat_timeout())
-									{
-											clear_heartbeat_timeout();
-											break;
-									}
+									/*call wifi receive*/
+									if(gpio_input_bit_get(GPIOA,GPIO_PIN_4))
+											EXTI4_IRQHandler();
+									//if hearbeat timed out, of connection lost
+									if(heartbeat_timeout()  && wifi_GetClients(WIFI_CAN_CTL_CHNL) <= 0 && wifi_GetClients(WIFI_VCI_CTL_CHNL) <= 0)
+											//if last wifi activity is 40ms earlier
+											if(current_time01ms() - last_wifi_time > 400)
+											{
+													clear_heartbeat_timeout();
+													updown_err_cnt += (current_time01ms()/10 - up) < 400;
+													//if wifi connection is abnormal, ie. the FIN packet is missing
+													if(updown_err_cnt == 2)
+															set_vci_status(VCI_STATUS_RESET);
+													break;
+											}
+									//send status back to remote device
 									if(heartbeat_pending())
 									{
 											clear_heartbeat_pending();

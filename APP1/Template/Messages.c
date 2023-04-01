@@ -33,7 +33,6 @@ void can_msg_recv(u8 channel,u32 can, u8 fifo)
 						CAN_RFIFO0(can) |= CAN_RFIFO0_RFD0;
 				else
 						CAN_RFIFO1(can) |= CAN_RFIFO1_RFD1;
-				tim3_slow();
 				return;
 		}
 		id = can_msg_recv_start + can_msg_recv_count;//new message position
@@ -48,7 +47,6 @@ void can_msg_recv(u8 channel,u32 can, u8 fifo)
 		
 		if(can_traffic_indicator < 250)
 				can_traffic_indicator += 5;
-		tim3_normal();
 }
 
 /*!
@@ -98,6 +96,7 @@ u16 can_cmd_recv_iterate(void)
 		id = dlen / sizeof(CAN_SEND_CMD);
 		if(dlen != (u16)id * sizeof(CAN_SEND_CMD))
 		{
+			volatile u8 s=sizeof(CAN_SEND_CMD);
 				messaging_status = MSG_STATUS_ERR_SEND_DATA_ERROR;
 		}
 		else

@@ -246,6 +246,7 @@ void vci_ctl_recv(VCI_CTL_TYPE type)
 				case CAN_CTL_TYPE_STOP:
 						vci_can_stop();
 						wifi_SendData((u8*)&type, sizeof(type), WIFI_CAN_CTL_CHNL);
+						set_vci_status(VCI_STATUS_RESET);
 						break;
 				case CAN_CTL_TYPE_SETTING:
 						setting();

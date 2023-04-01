@@ -11,6 +11,17 @@
 #define WIFI_VCI_CTL_CHNL			3
 #define CAN_NUMBERS						2
 
+#define IT_PRI_PRE_DELAY 0
+#define IT_PRI_PRE_TIME 0
+#define IT_PRI_PRE_CAN 1
+#define IT_PRI_PRE_WIFI 1
+#define IT_PRI_PRE_LED 2
+#define IT_PRI_SUB_TIME 1
+#define IT_PRI_SUB_DELAY 0
+#define IT_PRI_SUB_CAN 0
+#define IT_PRI_SUB_WIFI 1
+#define IT_PRI_SUB_LED 0
+
 typedef enum
 {
 		VCI_STATUS_RUN,

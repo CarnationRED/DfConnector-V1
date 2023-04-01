@@ -2,7 +2,6 @@
 #define __WIFI__
 #include "gd32c10x.h"
 #include <stdio.h>
-#include "gd32c10x_eval.h"
 #define WIFI_SEND_BUFFER 1024
 
 // Define the SPI port and pins

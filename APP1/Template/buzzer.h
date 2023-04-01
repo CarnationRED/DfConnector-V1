@@ -40,7 +40,7 @@
 void beep(u8* arr, u8 len, u16 bpm);
 void beep_setvolume(u8 percent);
 
-void buzzer_tick(void);
+void TIMER2_IRQHandler(void);
 void buzzer_wait_until_idle(void);
 
 #endif
