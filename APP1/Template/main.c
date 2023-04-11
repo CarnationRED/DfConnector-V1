@@ -7,6 +7,7 @@
 #include "Messages.h"
 #include "VCI.h"
 #include "gd32c10x_gpio.h"
+#include "SD.h"
 
 #define CH444G_PORT				GPIOB
 #define CH444G_SW0				GPIO_PIN_7
@@ -45,6 +46,7 @@ extern u8 can_msg_recv_count;
 extern u8 can_cmd_recv_start;
 extern u8 can_cmd_recv_count;
 extern u32 last_wifi_time;
+extern u8 success_beep[];
 
 void set_vci_status(VCI_STATUS s)
 {
@@ -57,9 +59,11 @@ VCI_STATUS get_vci_status(void)
 void err_led()
 {
 		u8 i = 0;
+				__set_FAULTMASK(1);
+				NVIC_SystemReset();
 		while(1)
 		{
-				delay_us(1000000);
+				delay_ms(500);
 				gpio_bit_write(GPIOC, GPIO_PIN_13, i);
 				if(i==0)i=1;
 				else i=0;
@@ -442,19 +446,12 @@ int main(void)
 				led_flash_config();
 				
 				buzz_config();
-				beep_setvolume(85);
+				beep_setvolume(100);
 				if(rom1)
 					beep(beep_startup1, 1, 400);
 				else 
 					beep(beep_startup2, 1, 400);
 			
-				while(0)
-				{
-					u32 i=50000;
-					while(i-->0)
-					delay_us(10);
-					gpio_bit_write(GPIOC,GPIO_PIN_14,led2_state=SET-led2_state);
-				}
 				
 				vci_can_init();
 	
@@ -507,6 +504,8 @@ int main(void)
 				
 				/* start wifi, time consuming */
 				wifi_Init();
+				//sd_init();
+				
 				delay_ms(220);
 				/* start server port 1112 for can message uploading and can command downloading */
 				wifi_SetupTCPServer(WIFI_CAN_MSG_PORT,WIFI_CAN_MSG_CHNL);
@@ -526,13 +525,14 @@ int main(void)
 				}else{
 					volatile u8 a=1;
 				}
+
 				set_vci_status(VCI_STATUS_RUN);
 				
 				while(get_vci_status() == VCI_STATUS_RUN)
 				{
 						u8 counter = 0;
 						u8 updown_err_cnt = 0;
-						u32 up;
+						volatile	u32 up;
 						wifi_status = WIFI_STATUS_WAIT_FOR_CNT;
 						/*wait until connection established*/
 						while(wifi_GetClients(WIFI_CAN_CTL_CHNL) <= 0 && wifi_GetClients(WIFI_VCI_CTL_CHNL) <= 0 && wifi_GetClients(WIFI_CAN_MSG_CHNL) <= 0 && get_vci_status() == VCI_STATUS_RUN) delay_ms(100);

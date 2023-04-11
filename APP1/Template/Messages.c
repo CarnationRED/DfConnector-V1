@@ -43,8 +43,8 @@ void can_msg_recv(u8 channel,u32 can, u8 fifo)
 		msg = &(can_recv_queue[id]);
 		msg->channel = channel;
 		msg->serial = can_recv_serial++;
-		msg->time = current_time01ms();
 		can_message_receive(can, fifo, (can_receive_message_struct*)msg);
+		msg->time = current_time01ms();
 		can_msg_recv_count++;
 		
 		if(can_traffic_indicator < 250)
@@ -115,7 +115,7 @@ u16 can_cmd_recv_iterate(u8 iterate0)
 		}
 		
 		cmd = &(can_send_queue[id]);
-		dlen = M8266WIFI_SPI_RecvData(((u8*)cmd) + (iterate0? 1:0) + offset - 8, continous_space * sizeof(CAN_SEND_CMD), 1, NULL, &status);
+		dlen = M8266WIFI_SPI_RecvData(((u8*)cmd) + (iterate0? 1:0) + offset - 8, continous_space * sizeof(CAN_SEND_CMD), 2, NULL, &status);
 		if(iterate0 && dlen + 1 >= sizeof(CAN_SEND_CMD))
 			dlen++;
 		id = (dlen+8) / sizeof(CAN_SEND_CMD);

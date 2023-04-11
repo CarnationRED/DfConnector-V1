@@ -31,7 +31,7 @@ u8 recv(void)
 {
 		u16 dlen, status;
 		u8 chnl;
-		dlen = M8266WIFI_SPI_RecvData(buffer, BUFFER_LEN, 1, &chnl, &status);
+		dlen = M8266WIFI_SPI_RecvData(buffer, BUFFER_LEN, 2, &chnl, &status);
 		if(dlen > 0)
 		{
 				if(chnl != WIFI_CAN_CTL_CHNL || (status & 0xff) != 0)
@@ -113,7 +113,7 @@ void device_firmware_upgrade(void)
 				do
 				{
 						dlen = 0;
-						dlen = M8266WIFI_SPI_RecvData((u8*) &dfu_buffer, sizeof(VCI_CTL_DFU_STRUCT), 1, &chnl, &status);
+						dlen = M8266WIFI_SPI_RecvData((u8*) &dfu_buffer, sizeof(VCI_CTL_DFU_STRUCT), 2, &chnl, &status);
 						if(chnl == WIFI_VCI_CTL_CHNL && dlen == sizeof(VCI_CTL_DFU_STRUCT))
 						{
 								total = dfu_buffer.total;
@@ -207,6 +207,7 @@ void device_firmware_upgrade(void)
 				beep_setvolume(90);
 				while(1)
 				{
+					buzzer_wait_until_idle();
 					beep(success_beep,sizeof(success_beep),240);
 				}
 		}

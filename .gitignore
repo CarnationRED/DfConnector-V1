@@ -26,3 +26,5 @@ Bootloader1/Template/Keil_project/output/*
  *.map
 *.Administrator
 *.uvopt
+*.crf
+*.crf

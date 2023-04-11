@@ -6,6 +6,8 @@ volatile u8 buzzer_duty = 100;
 volatile u8 music[256];
 volatile u8 total_note, curr_note;
 volatile u16 bpm, beatgap;
+u8 lastnote=0xff,needgap=0,gap_applied=0;
+u16 gapload;
 static u16 _tone_period[29]
 	= {
 			0,
@@ -86,13 +88,42 @@ void TIMER2_IRQHandler(void)
 		if(curr_note < total_note)
 		{
 				volatile u8 note = music[curr_note];
-			
-				TIMER_CAR(_BUZZER_TIMER) = (u32) _tone_period[note];//period (reload)
-//				if(note > 18 && buzzer_duty < 130) duty_corrected += (float)(note - 18) * .1f * (130 - buzzer_duty);
-				TIMER_CH0CV(_BUZZER_TIMER) = (u32)TIMER_CAR(_BUZZER_TIMER) * buzzer_duty / 256;//pulse (volume)
-				TIMER_CCHP(_BUZZER_TIMER) |= (u32) TIMER_CCHP_POEN;//enable pwm
-				TIMER_CTL0(_BUZZER_TIMER) |= (u32)TIMER_CTL0_ARSE;//enable auto reload
-				curr_note++;
+				
+				if(needgap == 0)
+				{
+					if(note == lastnote)
+					{
+						gapload = (beatgap * 10 - 1) * 0.1f;
+						if(gapload < 2) gapload = 2;
+						needgap = 1;
+						gap_applied = 0;
+						TIMER_CAR(TIMER2) = gapload;
+						TIMER_CCHP(_BUZZER_TIMER) &= (~(u32)TIMER_CCHP_POEN);//disable pwm
+						TIMER_CTL0(_BUZZER_TIMER) &= ~(u32)TIMER_CTL0_ARSE;//disable auto reload
+					}
+					else
+					{
+						TIMER_CAR(_BUZZER_TIMER) = (u32) _tone_period[note];//period (reload)
+//					if(note > 18 && buzzer_duty < 130) duty_corrected += (float)(note - 18) * .1f * (130 - buzzer_duty);
+						TIMER_CH0CV(_BUZZER_TIMER) = (u32)TIMER_CAR(_BUZZER_TIMER) * buzzer_duty / 256;//pulse (volume)
+						TIMER_CCHP(_BUZZER_TIMER) |= (u32) TIMER_CCHP_POEN;//enable pwm
+						TIMER_CTL0(_BUZZER_TIMER) |= (u32)TIMER_CTL0_ARSE;//enable auto reload
+						curr_note++;
+					}
+				}
+				else
+				{
+						TIMER_CAR(TIMER2) = beatgap * 10 - 1 - gapload;
+						needgap = 0;
+						gap_applied = 1;
+						TIMER_CAR(_BUZZER_TIMER) = (u32) _tone_period[note];//period (reload)
+//					if(note > 18 && buzzer_duty < 130) duty_corrected += (float)(note - 18) * .1f * (130 - buzzer_duty);
+						TIMER_CH0CV(_BUZZER_TIMER) = (u32)TIMER_CAR(_BUZZER_TIMER) * buzzer_duty / 256;//pulse (volume)
+						TIMER_CCHP(_BUZZER_TIMER) |= (u32) TIMER_CCHP_POEN;//enable pwm
+						TIMER_CTL0(_BUZZER_TIMER) |= (u32)TIMER_CTL0_ARSE;//enable auto reload
+						curr_note++;
+				}
+				lastnote = note;
 		}
 		else{
 				buzzer_running = 0;

@@ -42,7 +42,7 @@ void wifi_spi_init(void)
 		spi_init_struct.frame_size = SPI_FRAMESIZE_8BIT; // 8-bit data frame size
 		spi_init_struct.clock_polarity_phase = SPI_CK_PL_LOW_PH_1EDGE; // Clock polarity and phase mode 0
 		spi_init_struct.nss = SPI_NSS_SOFT; // Soft NSS signal
-		spi_init_struct.prescale = SPI_PSC_8; // Prescale factor to get desired speed 
+		spi_init_struct.prescale = SPI_PSC_8; // Prescale factor to get desired speed, 120/8=15, 120/32=3.75 
 		spi_init_struct.endian = SPI_ENDIAN_MSB; // MSB first
 	 
 	 // Initialize the SPI0 peripheral with the parameters 
@@ -165,7 +165,7 @@ void wifi_Init(void)
 					wifi_ssid[i]=IntToHex(cpuid2>>(28-(i-5)*4));
 				}
 			
-				if (M8266WIFI_SPI_Config_AP((u8*)wifi_ssid, (u8*)"11111111", 4, 6, 0, &status) == 0) 
+				if (M8266WIFI_SPI_Config_AP((u8*)wifi_ssid, (u8*)"11111111", 4, 12, 0, &status) == 0) 
 				{
 						if (M8266WIFI_SPI_Config_AP("Anylinkin", "1234567890", 4, 1, 0, &status) == 0)
 								wifi_status = WIFI_STATUS_ERR_CONFIGAP;

@@ -439,6 +439,11 @@
               <FileType>1</FileType>
               <FilePath>..\buzzer.c</FilePath>
             </File>
+            <File>
+              <FileName>SD.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SD.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

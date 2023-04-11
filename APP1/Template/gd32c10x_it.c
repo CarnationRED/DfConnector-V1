@@ -192,7 +192,7 @@ void EXTI4_IRQHandler(void)
 //		if(M8266WIFI_SPI_Has_DataReceived())
 		{
 				vci_ctl_type_header.type = 0xffffffff;
-				dlen = M8266WIFI_SPI_RecvData((u8*)&vci_ctl_type_header, sizeof(vci_ctl_type_header), 1, &chnl, &status);
+				dlen = M8266WIFI_SPI_RecvData((u8*)&vci_ctl_type_header, sizeof(vci_ctl_type_header), 2, &chnl, &status);
 				if(dlen > 0)
 				{
 						last_wifi_time = current_time01ms();
