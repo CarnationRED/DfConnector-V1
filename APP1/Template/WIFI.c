@@ -245,17 +245,28 @@ u8 wifi_GetSTACount()
 u16 wifi_SendData(uint8_t data[], uint16_t dataLen,u8 link_no)
 {
     u16 status;
-		u16 size;
-    while (1)
-        if (dataLen > 1460 || (size = M8266WIFI_SPI_Send_Data(data, dataLen, link_no, &status)) == 0) {
-            if((status & 0x12) == 0x12) continue;
-            if((status & 0x18) == 0x18) 
-								wifi_status = WIFI_STATUS_ERR_CONTLOST;
-            wifi_status = WIFI_STATUS_ERR_SENDDATA;
-						break;
-        } else
-            break;
-				
+		u16 size;u8 i;
+//	for(i=0;i<dataLen-3;i++)
+//	if(data[i]==0x1 && data[i+1]==0x02 && data[i+2]==0x00 && data[i+3]==0x01)
+//	if(dataLen==0x20)
+//	{
+//				__set_FAULTMASK(1);
+//				NVIC_SystemReset();
+//	}
+//    while (1)
+//        if (dataLen > 1460 || (size = M8266WIFI_SPI_Send_Data(data, dataLen, link_no, &status)) != dataLen) {
+//            if((status & 0x12) == 0x12){ 
+//							data += size;
+//							dataLen -= size;
+//							continue;
+//						}
+//            if((status & 0x18) == 0x18) 
+//								wifi_status = WIFI_STATUS_ERR_CONTLOST;
+//            wifi_status = WIFI_STATUS_ERR_SENDDATA;
+//						break;
+//        } else
+//            break;
+				size = M8266WIFI_SPI_Send_BlockData(data, dataLen, 5000, link_no, NULL, 0, &status);
 				last_wifi_time = current_time01ms();
 		return size;
 }

@@ -18,6 +18,8 @@ static u8 can_cmd_send_ack;
 void can_cmd_sendonce(CAN_SEND_CMD* cmd);
 volatile u8 can_traffic_indicator;
 
+extern u8 connected;
+
 //steps:
 //1, in can recieve interrupt, call can_msg_recv
 //2, in main loop, call can_msg_send2wifi to send msg via tcp
@@ -27,16 +29,34 @@ volatile u8 can_traffic_indicator;
 void can_msg_recv(u8 channel,u32 can, u8 fifo)
 {
 		CAN_RECV_MSG *msg;
+		CAN_RECV_MSG msg1;
 		u8 id;
+	
+		if(!connected)
+		{
+				if(fifo == CAN_FIFO0)
+						CAN_RFIFO0(can) |= CAN_RFIFO0_RFD0;//clear fifo
+				else
+						CAN_RFIFO1(can) |= CAN_RFIFO1_RFD1;
+				
+				gpio_bit_write(GPIOC, GPIO_PIN_14, 1 - gpio_output_bit_get(GPIOC,GPIO_PIN_14));
+				return;
+		}
+		
 		if(can_msg_recv_count == CAN_RECV_BUFFER)
 		{
 				messaging_status = MSG_STATUS_ERR_RECVBUFFER_FULL;
 				if(fifo == CAN_FIFO0)
-						CAN_RFIFO0(can) |= CAN_RFIFO0_RFD0;
+						CAN_RFIFO0(can) |= CAN_RFIFO0_RFD0;//clear fifo
 				else
 						CAN_RFIFO1(can) |= CAN_RFIFO1_RFD1;
 				return;
 		}
+		
+		/*can_message_receive(can, fifo, (can_receive_message_struct*)&msg1);
+		if(M8266WIFI_SPI_Send_Data((u8*)&msg1, sizeof(CAN_RECV_MSG), WIFI_CAN_MSG_CHNL,NULL) == 0)
+				messaging_status = MSG_STATUS_ERR_SEND_DATA_ERROR;*/
+		
 		id = can_msg_recv_start + can_msg_recv_count;//new message position
 		if(id >= CAN_RECV_BUFFER) id -= CAN_RECV_BUFFER;
 		
@@ -59,12 +79,16 @@ void can_msg_send2wifi(void)
 		u16 size; u8 count;
 		u8 recved = can_msg_recv_count;
 		if(recved == 0) return;
-		count = recved < MAX_MSG_PER_SEND? recved : MAX_MSG_PER_SEND;
+		count = (recved < MAX_MSG_PER_SEND)? recved : MAX_MSG_PER_SEND;
 		if(can_msg_recv_start + count > CAN_RECV_BUFFER)
 				count = CAN_RECV_BUFFER - can_msg_recv_start;
 		size = count * sizeof(CAN_RECV_MSG);
-		if(wifi_SendData((u8*)&can_recv_queue[can_msg_recv_start], size, WIFI_CAN_MSG_CHNL) != size)
-				messaging_status = MSG_STATUS_ERR_SEND_DATA_JAMMED;
+		if(wifi_SendData((u8*)&(can_recv_queue[can_msg_recv_start]), size, WIFI_CAN_MSG_CHNL) != size)
+		{		
+//				__set_FAULTMASK(1);
+//				NVIC_SystemReset();
+			messaging_status = MSG_STATUS_ERR_SEND_DATA_JAMMED;
+		}
 		can_msg_recv_start += count;
 		if(can_msg_recv_start >= CAN_RECV_BUFFER)
 				can_msg_recv_start -= CAN_RECV_BUFFER;

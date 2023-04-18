@@ -20,6 +20,7 @@ extern u8 can_traffic_indicator;
 extern bit_status led2_state;
 extern bit_status systick_state;
 extern u16 systick_cycles;
+extern u8 connected;
 static volatile u8 heartbeat_send_i=0;
 static volatile u8 heartbeat_send_c=2;
 static volatile u8 heartbeat_recv_i=0;
@@ -201,6 +202,10 @@ void tim3_it(void)
 		if(heartbeat_recv_i < heartbeat_recv_c)
 		{
 				heartbeat_recv_i++;
+		}
+		if(!connected && gpio_output_bit_get(GPIOC,GPIO_PIN_14))
+		{
+				gpio_bit_write(GPIOC, GPIO_PIN_14, 0);
 		}
 }
 

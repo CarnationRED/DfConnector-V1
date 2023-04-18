@@ -38,6 +38,7 @@ static u8 beep_connected[]={8,17,21};
 static u8 beep_disconnected[]={21,17,8};
 
 volatile static VCI_CTL_HEARTBEAT_STRUCT heartbeat;
+volatile u8 connected=0;
 
 extern WIFI_STATUS wifi_status;
 extern MESSAGING_STATUS messaging_status;
@@ -151,7 +152,7 @@ void can_set_id_filter_standard(u8 filter_no, u16 id1, u16 id2, u16 id3, u16 id4
 		can_struct_para_init(CAN_FILTER_STRUCT, &canf);
 		canf.filter_number = filter_no;
 		
-		canf.filter_mode = CAN_FILTERMODE_LIST;
+		canf.filter_mode = (id1==0&&id1==id2&&id2==id3&&id3==id4)?CAN_FILTERMODE_MASK : CAN_FILTERMODE_LIST;
 		canf.filter_bits = CAN_FILTERBITS_32BIT;
 		
 		canf.filter_enable = enable;
@@ -454,54 +455,11 @@ int main(void)
 			
 				
 				vci_can_init();
-	
-//				can_struct_para_init(CAN_TX_MESSAGE_STRUCT, &m);
-//				m.tx_sfid = 0x001;
-//				m.tx_efid = 0x002;
-//				m.tx_ft = CAN_FT_DATA;
-//				m.tx_ff = CAN_FF_STANDARD;
-//				m.tx_dlen = 8;
-//				m.fd_flag = 0;
-//				m.fd_brs = 0;
-//				m.fd_esi = 0;
-//			  m.tx_efid = 0x111;
-//				m.tx_data[0] = 0xaa;
-//				m.tx_data[1] = 0xbb;
-//				m.tx_data[2] = 0xcc;
-//				m.tx_data[3] = 0xdd;
-//				m.tx_data[4] = 0xee;
-//				m.tx_data[5] = 0xff;
-//				m.tx_data[6] = 0x00;
-//				m.tx_data[7] = 0x11;
-//				while(1){
-//						gpio_bit_write(GPIOC, GPIO_PIN_14, led2_state = SET - led2_state);
-//							delay_ms(500);
-//					continue;
-//						set_can_channel(1);
-//						m.tx_data[0]=0x11;
-//						can_message_transmit(CAN1, &m);
-//						delay_ms(200);
-//					
-//						set_can_channel(2);
-//						m.tx_data[0]=0x22;
-//						can_message_transmit(CAN1, &m);
-//						delay_ms(200);
-//					
-//						set_can_channel(3);
-//						m.tx_data[0]=0x33;
-//						can_message_transmit(CAN1, &m);
-//						delay_ms(200);
-//					
-//						set_can_channel(4);
-//						m.tx_data[0]=0x44;
-//						can_message_transmit(CAN1, &m);
-//						delay_ms(200);
-//					
-//						m.tx_data[0]=0x0;
-//						can_message_transmit(CAN0, &m);
-//						delay_ms(200);
-//					}
 				
+				can_set_id_filter_standard(0,0,0,0,0,CAN0,ENABLE);
+				can_set_id_filter_standard(14,0,0,0,0,CAN1,ENABLE);
+				connected = 0;
+	
 				/* start wifi, time consuming */
 				wifi_Init();
 				//sd_init();
@@ -535,8 +493,15 @@ int main(void)
 						volatile	u32 up;
 						wifi_status = WIFI_STATUS_WAIT_FOR_CNT;
 						/*wait until connection established*/
-						while(wifi_GetClients(WIFI_CAN_CTL_CHNL) <= 0 && wifi_GetClients(WIFI_VCI_CTL_CHNL) <= 0 && wifi_GetClients(WIFI_CAN_MSG_CHNL) <= 0 && get_vci_status() == VCI_STATUS_RUN) delay_ms(100);
+						while(wifi_GetClients(WIFI_CAN_CTL_CHNL) <= 0 && wifi_GetClients(WIFI_VCI_CTL_CHNL) <= 0 && wifi_GetClients(WIFI_CAN_MSG_CHNL) <= 0 && get_vci_status() == VCI_STATUS_RUN)
+							delay_ms(50);
 						
+						can_clear_filter(CAN0);
+						can_clear_filter(CAN1);
+						connected = 1;
+						can_msg_buffer_clear();
+						gpio_bit_write(GPIOC, GPIO_PIN_14, 0);
+					
 						clear_heartbeat_timeout();
 						up= current_time01ms()/10;
 						buzzer_wait_until_idle();
@@ -584,9 +549,11 @@ int main(void)
 							//CAN SEND
 								can_cmd_send2can();
 						}
+						connected = 0;
 						while(get_vci_status() == VCI_STATUS_DFU);
 						buzzer_wait_until_idle();
 						beep(beep_disconnected, 3, 600);
+						buzzer_wait_until_idle();
 						if(messaging_status != MSG_STATUS_NORMAL)break;
 				}
 				__set_FAULTMASK(1);
